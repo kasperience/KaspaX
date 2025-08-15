@@ -1,0 +1,34 @@
+[package]
+name = "comment-board"
+description = "Pure kdapp Comment Board - Based on TicTacToe Architecture"
+rust-version = "1.70"
+version = "0.1.0"
+edition = "2021"
+authors = ["kdapp developer"]
+license = "MIT"
+
+[dependencies]
+kaspa-addresses = "*"
+kaspa-core = "*"
+kaspa-consensus-core = "*"
+kaspa-wrpc-client = "*"
+kaspa-rpc-core = "*"
+kaspa-txscript = "*"
+
+kdapp = { path = "../kdapp" }
+
+borsh = "1.5.1"
+serde = { version = "1.0.217", features = ["derive"] }
+faster-hex = "0.8.1"
+itertools = "0.13.0"
+log = "0.4"
+env_logger = "0.11.3"
+thiserror = "1.0.61"
+rand = "0.8"
+secp256k1 = { version = "0.28.0", features = ["global-context", "rand-std"] }
+sha2 = "0.10.8"
+tokio = { version = "1.37.0", features = ["rt", "macros", "rt-multi-thread"] }
+clap = "4.5.4"
+smallvec = "1.11"
+
+[workspace]

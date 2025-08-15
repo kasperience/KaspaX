@@ -1,0 +1,15 @@
+# icons.theme for kaspa theme
+
+[Icon Theme]
+Name=Kaspa
+Comment=Kaspa Icon Theme based on Papirus
+DisplayName=Kaspa
+Inherits=Papirus
+Directories=16x16,22x22,24x24,32x32,48x48,64x64,128x128,scalable
+
+[16x16]
+Size=16
+Type=Fixed
+
+# Add similar sections for other sizes...
+# This is a basic template. A full icon theme would require actual icon files.

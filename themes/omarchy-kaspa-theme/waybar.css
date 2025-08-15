@@ -1,0 +1,38 @@
+/* waybar.css for kaspa theme */
+@define-color background #231F20;
+@define-color foreground #FFFFFF;
+@define-color red #f7768e;
+@define-color green #9ece6a;
+@define-color yellow #e0af68;
+@define-color blue #7aa2f7;
+@define-color magenta #bb9af7;
+@define-color cyan #7dcfff;
+@define-color teal #70C7BA;     /* KASPA_PRIMARY_TEAL */
+@define-color teal_accent #49EACB; /* KASPA_ACCENT_TEAL */
+
+window#waybar {
+    background-color: @background;
+    color: @foreground;
+}
+
+#workspaces button.active {
+    color: @teal_accent;
+    border-bottom: 2px solid @teal_accent;
+}
+
+/* You can add more customizations here using the Kaspa color palette */
+#clock {
+    color: @foreground;
+}
+
+#battery {
+    color: @green;
+}
+
+#network {
+    color: @teal;
+}
+
+#pulseaudio {
+    color: @teal;
+}

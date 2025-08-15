@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Comment Board
+Comment=Decentralized Comment Board
+Exec=/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/omarchy/applications/kdapps/comment-board/target/release/comment-board
+Icon=view-list-text
+Terminal=false
+Type=Application
+Categories=Utility;Network;

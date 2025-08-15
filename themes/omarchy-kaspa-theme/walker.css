@@ -1,0 +1,55 @@
+/* walker.css for kaspa theme */
+
+/* Main window */
+window {
+  background-color: #231F20; /* KASPA_BLACK */
+  color: #FFFFFF; /* KASPA_WHITE */
+  border: 2px solid #70C7BA; /* KASPA_PRIMARY_TEAL */
+  border-radius: 10px;
+  font-family: "Sans", sans-serif;
+  font-size: 14px;
+}
+
+/* Search entry */
+entry {
+  background-color: #231F20; /* KASPA_BLACK */
+  color: #FFFFFF; /* KASPA_WHITE */
+  border: 1px solid #70C7BA; /* KASPA_PRIMARY_TEAL */
+  border-radius: 5px;
+  padding: 8px;
+  margin: 10px;
+}
+
+/* Search entry focus */
+entry:focus {
+  border-color: #49EACB; /* KASPA_ACCENT_TEAL */
+  box-shadow: 0 0 5px #49EACB; /* KASPA_ACCENT_TEAL */
+}
+
+/* List view */
+list {
+  background-color: transparent;
+}
+
+/* List items */
+row {
+  background-color: transparent;
+  padding: 8px;
+  border-bottom: 1px solid #B6B6B6; /* KASPA_GREY */
+}
+
+/* Selected list item */
+row:selected {
+  background-color: #70C7BA; /* KASPA_PRIMARY_TEAL */
+  color: #231F20; /* KASPA_BLACK */
+}
+
+/* Application icons */
+row image {
+  color: #70C7BA; /* KASPA_PRIMARY_TEAL */
+}
+
+/* Application name */
+row label {
+  color: #FFFFFF; /* KASPA_WHITE */
+}

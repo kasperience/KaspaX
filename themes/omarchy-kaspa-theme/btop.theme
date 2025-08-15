@@ -1,0 +1,50 @@
+# btop.theme for kaspa theme
+
+[theme]
+theme_name = "kaspa"
+
+# Main background and foreground colors
+bg = "#231F20"
+fg = "#FFFFFF"
+header_bg = "#231F20"
+header_fg = "#70C7BA"
+
+# Process list colors
+proc_misc = "#B6B6B6"
+proc_cpu = "#70C7BA"
+proc_mem = "#49EACB"
+proc_pid = "#B6B6B6"
+proc_fg = "#FFFFFF"
+
+# CPU graph colors
+cpu_box = "#231F20"
+cpu_fg = "#FFFFFF"
+cpu_online = "#70C7BA"
+cpu_offline = "#B6B6B6"
+
+# Memory graph colors
+mem_box = "#231F20"
+mem_fg = "#FFFFFF"
+mem_main = "#70C7BA"
+mem_swap = "#49EACB"
+
+# Net graph colors
+net_box = "#231F20"
+net_fg = "#FFFFFF"
+net_download = "#70C7BA"
+net_upload = "#49EACB"
+
+# Disk graph colors
+disk_box = "#231F20"
+disk_fg = "#FFFFFF"
+disk_read = "#70C7BA"
+disk_write = "#49EACB"
+
+# Temperature colors
+temp_good = "#9ece6a"
+temp_high = "#e0af68"
+temp_crit = "#f7768e"
+
+# Miscellaneous colors
+selected = "#70C7BA"
+selected_fg = "#231F20"

@@ -1,0 +1,39 @@
+/* swayosd.css for kaspa theme */
+
+/* Background and text colors */
+.swayosd {
+  background-color: #231F20; /* KASPA_BLACK */
+  color: #FFFFFF; /* KASPA_WHITE */
+  border: 2px solid #70C7BA; /* KASPA_PRIMARY_TEAL */
+  border-radius: 8px;
+  font-family: "Sans", sans-serif;
+  font-size: 16px;
+}
+
+/* Volume and brightness slider */
+.swayosd slider {
+  background-color: #B6B6B6; /* KASPA_GREY */
+  border-radius: 4px;
+  min-height: 10px;
+  min-width: 150px;
+}
+
+/* Slider fill (current level) */
+.swayosd slider fill {
+  background-color: #49EACB; /* KASPA_ACCENT_TEAL */
+  border-radius: 4px;
+}
+
+/* Slider handle */
+.swayosd slider handle {
+  background-color: #70C7BA; /* KASPA_PRIMARY_TEAL */
+  border: 1px solid #FFFFFF; /* KASPA_WHITE */
+  border-radius: 6px;
+  min-height: 12px;
+  min-width: 12px;
+}
+
+/* Icon colors */
+.swayosd image {
+  color: #70C7BA; /* KASPA_PRIMARY_TEAL */
+}

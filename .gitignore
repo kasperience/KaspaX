@@ -1,0 +1,13 @@
+# Ignore user-specific and generated files
+lazyvim.json
+**/light.mode
+# Rust build artifacts
+target/
+*.rlib
+*.rmeta
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.o

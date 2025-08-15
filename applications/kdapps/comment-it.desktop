@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=CommentIt
+Comment=Decentralized Commenting App
+Exec=/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/omarchy/applications/kdapps/comment-it/target/release/comment-it
+Icon=document-edit
+Terminal=false
+Type=Application
+Categories=Utility;Network;

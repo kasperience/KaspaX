@@ -1,0 +1,24 @@
+[package]
+name = "kdapp-wallet"
+version = "0.1.0"
+rust-version = "1.70"
+authors = ["kdapp developer"]
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.98"
+clap = { version = "4.5.4", features = ["derive"] }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "fs"] }
+keyring = { version = "3.0.0", features = ["windows-native"] }
+kaspa-core = "*"
+kaspa-wrpc-client = "*"
+kaspa-consensus-core = "*"
+kaspa-addresses = "*"
+kaspa-rpc-core = "*"
+hex = "0.4"
+secp256k1 = { version = "0.28.0", features = ["global-context", "rand-std"] }
+rand = "0.8"
+workflow-rpc = "*"
+
+[workspace]

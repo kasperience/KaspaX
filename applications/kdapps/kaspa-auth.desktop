@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Kaspa Auth
+Comment=Kaspa Authentication Daemon
+Exec=sh -c '$HOME/.local/share/kdapps/kaspa-auth/kaspa-auth --keychain daemon start --foreground'
+Icon=security-high
+Terminal=false
+Type=Application
+Categories=Utility;Security;
+NoDisplay=true

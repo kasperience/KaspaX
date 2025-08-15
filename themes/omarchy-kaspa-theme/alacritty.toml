@@ -1,0 +1,25 @@
+# alacritty.toml for kaspa theme
+
+[colors.primary]
+background = "#231F20"
+foreground = "#FFFFFF"
+
+[colors.normal]
+black = "#231F20"
+red = "#f7768e"
+green = "#9ece6a"
+yellow = "#e0af68"
+blue = "#70C7BA"
+magenta = "#49EACB"
+cyan = "#70C7BA"
+white = "#B6B6B6"
+
+[colors.bright]
+black = "#3A3A3A"
+red = "#f7768e"
+green = "#9ece6a"
+yellow = "#e0af68"
+blue = "#70C7BA"
+magenta = "#49EACB"
+cyan = "#70C7BA"
+white = "#FFFFFF"
