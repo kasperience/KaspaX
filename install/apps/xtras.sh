@@ -17,4 +17,5 @@ if [ -z "$OMARCHY_BARE" ]; then
 fi
 
 # Copy over Omarchy applications
-source ~/.local/share/omarchy/bin/omarchy-refresh-applications || true
+# Refresh applications
+update-desktop-database ~/.local/share/applications/ 2>/dev/null || true

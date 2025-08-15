@@ -1,0 +1,14 @@
+[Unit]
+Description=Kaspa Authentication Daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/kdapps/kaspa-auth/kaspa-auth --keychain daemon start --foreground
+Restart=on-failure
+RestartSec=5
+Environment=XDG_RUNTIME_DIR=%t
+
+[Install]
+WantedBy=default.target

@@ -1,23 +1,23 @@
 #!/bin/bash
 
-# Copy over Omarchy configs
-cp -R ~/.local/share/omarchy/config/* ~/.config/
+# Copy over Kaspa Linux configs
+cp -R ~/.local/share/kaspa-linux/config/* ~/.config/
 
-# Use default bashrc from Omarchy
-cp ~/.local/share/omarchy/default/bashrc ~/.bashrc
+# Use default bashrc from Kaspa Linux
+cp ~/.local/share/kaspa-linux/default/bashrc ~/.bashrc
 
 # Ensure application directory exists for update-desktop-database
 mkdir -p ~/.local/share/applications
 
 # If bare install, allow a way for its exclusions to not get added in updates
-if [ -n "$OMARCHY_BARE" ]; then
-  mkdir -p ~/.local/state/omarchy
-  touch ~/.local/state/omarchy/bare.mode
+if [ -n "$KASPA_LINUX_BARE" ]; then
+  mkdir -p ~/.local/state/kaspa-linux
+  touch ~/.local/state/kaspa-linux/bare.mode
 fi
 
 # Setup GPG configuration with multiple keyservers for better reliability
 sudo mkdir -p /etc/gnupg
-sudo cp ~/.local/share/omarchy/default/gpg/dirmngr.conf /etc/gnupg/
+sudo cp ~/.local/share/kaspa-linux/default/gpg/dirmngr.conf /etc/gnupg/
 sudo chmod 644 /etc/gnupg/dirmngr.conf
 sudo gpgconf --kill dirmngr || true
 sudo gpgconf --launch dirmngr || true
@@ -35,19 +35,19 @@ git config --global pull.rebase true
 git config --global init.defaultBranch master
 
 # Set identification from install inputs
-if [[ -n "${OMARCHY_USER_NAME//[[:space:]]/}" ]]; then
-  git config --global user.name "$OMARCHY_USER_NAME"
+if [[ -n "${KASPA_LINUX_USER_NAME//[[:space:]]/}" ]]; then
+  git config --global user.name "$KASPA_LINUX_USER_NAME"
 fi
 
-if [[ -n "${OMARCHY_USER_EMAIL//[[:space:]]/}" ]]; then
-  git config --global user.email "$OMARCHY_USER_EMAIL"
+if [[ -n "${KASPA_LINUX_USER_EMAIL//[[:space:]]/}" ]]; then
+  git config --global user.email "$KASPA_LINUX_USER_EMAIL"
 fi
 
 # Set default XCompose that is triggered with CapsLock
 tee ~/.XCompose >/dev/null <<EOF
-include "%H/.local/share/omarchy/default/xcompose"
+include "%H/.local/share/kaspa-linux/default/xcompose"
 
 # Identification
-<Multi_key> <space> <n> : "$OMARCHY_USER_NAME"
-<Multi_key> <space> <e> : "$OMARCHY_USER_EMAIL"
+<Multi_key> <space> <n> : "$KASPA_LINUX_USER_NAME"
+<Multi_key> <space> <e> : "$KASPA_LINUX_USER_EMAIL"
 EOF

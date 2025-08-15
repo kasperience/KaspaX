@@ -1,0 +1,52 @@
+# SwayOSD configuration
+
+[general]
+# Position of the OSD
+position=top-center
+
+# Size of the OSD
+width=400
+height=150
+
+# Margin from the edge of the screen
+margin=20
+
+# Animation duration in milliseconds
+animation-duration=300
+
+# Timeout before the OSD disappears in milliseconds
+timeout=1500
+
+# Font settings
+font-family=JetBrainsMono Nerd Font
+font-size=24
+
+# Color scheme
+background-color=#1e1e2e
+text-color=#cdd6f4
+accent-color=#89b4fa
+border-color=#89b4fa
+border-width=2
+border-radius=0
+
+# Icon settings
+icon-size=48
+icon-spacing=10
+
+# Volume specific settings
+[volume]
+show-percentage=true
+show-icon=true
+
+# Brightness specific settings
+[brightness]
+show-percentage=true
+show-icon=true
+
+# Media specific settings
+[media]
+show-icon=true
+show-title=true
+show-artist=true
+max-title-length=50
+max-artist-length=30

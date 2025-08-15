@@ -1,0 +1,28 @@
+# Mako notification daemon configuration
+
+# Basic appearance
+width=300
+height=100
+margin=10
+padding=10
+border-size=2
+border-color=#89b4fa
+border-radius=0
+background-color=#1e1e2e
+text-color=#cdd6f4
+font=JetBrainsMono Nerd Font 12
+
+# Positioning
+anchor=top-right
+layer=overlay
+
+# Behavior
+timeout=5000
+default-timeout=5000
+ignore-timeout=no
+max-icon-size=64
+
+# Grouping
+max-visible=5
+sort=-time
+group-by=app-name

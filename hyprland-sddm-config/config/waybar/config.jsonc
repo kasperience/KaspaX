@@ -1,0 +1,52 @@
+{
+    "height": 30,
+    "spacing": 10,
+    "modules-left": ["hyprland/workspaces", "hyprland/window"],
+    "modules-center": ["clock"],
+    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate",
+        "format-icons": {
+            "active": "●",
+            "empty": "○",
+            "default": "○"
+        }
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "separate-outputs": true
+    },
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%Y-%m-%d %H:%M:%S}",
+        "tooltip-format": "{:%Y-%m-%d %H:%M:%S}",
+        "interval": 1
+    },
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "🔇 Muted",
+        "on-click": "pavucontrol",
+        "scroll-step": 5,
+        "format-icons": {
+            "default": ["🔈", "🔉", "🔊"]
+        }
+    },
+    "network": {
+        "format-wifi": "🌐 {essid}",
+        "format-ethernet": "🌐 Ethernet",
+        "format-disconnected": "🌐 Disconnected",
+        "on-click": "nm-connection-editor"
+    },
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-charging": "⚡ {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-alt": "{icon} {time}",
+        "format-icons": ["🪫", "🔋", "🔋", "🔋", "🔋"],
+        "interval": 30
+    },
+    "tray": {
+        "spacing": 10
+    }
+}

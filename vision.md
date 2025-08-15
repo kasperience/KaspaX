@@ -8,7 +8,7 @@
 
 ## Key Technologies
 
-*   **Operating System Base:** Omarchy (Arch Linux + Hyprland)
+*   **Operating System Base:** Arch Linux + Hyprland
 *   **Core Application Framework:** kdapp (Rust-based P2P framework)
 *   **Blockchain Integration:** Native integration with the Kaspa network for identity, data, and transactions.
 

@@ -1,9 +1,9 @@
-### Kaspa Linux on Omarchy: Deploy and Test kaspa-auth
+### Deploying and Testing kaspa-auth on Kaspa Linux
 
-This guide explains how to pull your fork on an already installed Omarchy system, deploy the `kaspa-auth` daemon, enable it as a user service, and test end-to-end. It also covers applying the Kaspa theme.
+This guide explains how to pull your fork on an already installed Kaspa Linux system, deploy the `kaspa-auth` daemon, enable it as a user service, and test end-to-end. It also covers applying the Kaspa theme.
 
 #### Prerequisites
-- An installed Omarchy system (user session)
+- An installed Kaspa Linux system (user session)
 - Network access and `yay`
 - Rust toolchain if building locally: `rustup` (optional if you ship binaries)
 - Keychain services for secrets: `gnome-keyring libsecret seahorse`
@@ -12,20 +12,15 @@ This guide explains how to pull your fork on an already installed Omarchy system
 yay -S --needed gnome-keyring libsecret seahorse
 ```
 
-### 1) Point the installed Omarchy to your fork and update
-By default, Omarchy lives at `~/.local/share/omarchy` on the installed system.
+### 1) Point the installed Kaspa Linux to your fork and update
+By default, Kaspa Linux lives at `~/.local/share/kaspa-linux` on the installed system.
 
 ```bash
 # Replace with your fork URL (SSH or HTTPS)
-git -C ~/.local/share/omarchy remote set-url origin <your-fork-url>
+git -C ~/.local/share/kaspa-linux remote set-url origin <your-fork-url>
 
-# Pull latest changes and run migrations
-~/.local/share/omarchy/bin/omarchy-update
-
-# NOTE: Omarchy ships the Hyprland aggregator. Do not overwrite it.
-# Keep ~/.config/hypr/hyprland.conf sourcing defaults and theme:
-#   source = ~/.local/share/omarchy/default/hypr/... (multiple)
-#   source = ~/.config/omarchy/current/theme/hyprland.conf
+# Pull latest changes
+~/.local/share/kaspa-linux/bin/kaspa-linux-update
 ```
 
 If you have local changes in that tree, commit or discard them before pulling.
@@ -35,7 +30,7 @@ If you have not added a migration that installs the binary automatically, build 
 
 ```bash
 mkdir -p ~/.local/share/kdapps/kaspa-auth
-cd ~/.local/share/omarchy/examples/kaspa-linux/omarchy/applications/kdapps/kaspa-auth
+cd ~/.local/share/kaspa-linux/examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth
 cargo build --release
 install -Dm755 target/release/kaspa-auth ~/.local/share/kdapps/kaspa-auth/kaspa-auth
 ```
@@ -47,7 +42,7 @@ The service unit is provided by the repo: `config/systemd/user/kaspa-auth.servic
 
 ```bash
 mkdir -p ~/.config/systemd/user
-cp ~/.local/share/omarchy/config/systemd/user/kaspa-auth.service ~/.config/systemd/user/
+cp ~/.local/share/kaspa-linux/config/systemd/user/kaspa-auth.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now kaspa-auth
 
@@ -80,25 +75,25 @@ You can then perform your authentication flow against your organizer peer as usu
 If your theme is in a separate repo, install and select it:
 
 ```bash
-# Install a theme repo; the tool places it under ~/.config/omarchy/themes/
-~/.local/share/omarchy/bin/omarchy-theme-install <theme-git-url>
+# Install a theme repo; the tool places it under ~/.config/kaspa-linux/themes/
+~/.local/share/kaspa-linux/bin/kaspa-linux-theme-install <theme-git-url>
 
 # Set theme by name (case/space-insensitive)
-~/.local/share/omarchy/bin/omarchy-theme-set kaspa
+~/.local/share/kaspa-linux/bin/kaspa-linux-theme-set kaspa
 
 # List available themes
-~/.local/share/omarchy/bin/omarchy-theme-list
+~/.local/share/kaspa-linux/bin/kaspa-linux-theme-list
 ```
 
-If your theme already exists under `~/.config/omarchy/themes/`, just run `omarchy-theme-set`.
+If your theme already exists under `~/.config/kaspa-linux/themes/`, just run `kaspa-linux-theme-set`.
 
 ### 6) Updating later
 
 ```bash
-~/.local/share/omarchy/bin/omarchy-update
+~/.local/share/kaspa-linux/bin/kaspa-linux-update
 ```
 
-This pulls from your fork, runs any new migrations, refreshes configs, and offers to update system packages.
+This pulls from your fork, refreshes configs, and offers to update system packages.
 
 ### Troubleshooting
 - Service not found: re-copy the unit to `~/.config/systemd/user/` and `daemon-reload`.

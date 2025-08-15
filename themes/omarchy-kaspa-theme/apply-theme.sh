@@ -4,7 +4,7 @@
 echo "Applying Kaspa theme..."
 
 # Define source and destination directories
-SOURCE_DIR="$HOME/.config/omarchy/themes/omarchy-kaspa-theme"
+SOURCE_DIR="$HOME/.config/kaspa-linux/themes/omarchy-kaspa-theme"
 CONFIG_DIR="$HOME/.config"
 
 # Apply Alacritty theme
