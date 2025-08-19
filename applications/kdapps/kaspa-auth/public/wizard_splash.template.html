@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kaspa Auth – First Login</title>
+    <style>
+      :root {
+        --bg: #0F1115;
+        --card: #151821;
+        --muted: #9aa4b2;
+        --border: #25293a;
+        --accent: #6ce5a3; /* complementary to logo greens */
+      }
+      body { margin:0; background:var(--bg); color:#EAEAEA; font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .wrap { display:grid; place-items:center; min-height:100vh; padding:24px; }
+      .card { max-width: 880px; width:100%; background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.5); padding:24px; }
+      .head { display:flex; gap:16px; align-items:center; margin-bottom:8px; }
+      .head img { height:60px; width:auto; border-radius:8px; }
+      .title { font-size:22px; margin:0; }
+      .lead { color: var(--muted); margin:0 0 16px; }
+      .row { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+      .label { font-size:13px; color: var(--muted); margin-bottom:6px; }
+      code.addr { display:block; user-select:all; font-size:15px; background:#0d0f14; padding:12px; border-radius:8px; border:1px solid var(--border); word-break: break-all; }
+      .faucet { margin-top:8px; font-size:13px; color: var(--muted); }
+      .faucet a { color: var(--accent); text-decoration: none; }
+      .qrbox { width: 272px; height: 272px; display:grid; place-items:center; background:#0d0f14; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+      .qrbox img { width: 100%; height: 100%; object-fit: contain; }
+      .note { font-size: 12px; color: var(--muted); text-align:center; padding: 12px; }
+      .actions { margin-top: 16px; display:flex; gap:12px; }
+      .btn { background: transparent; color:#EAEAEA; border:1px solid var(--border); border-radius:10px; padding:10px 14px; cursor:pointer; }
+      .btn:hover { border-color: var(--accent); color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <div class="head">
+          <img src="file://__LOGO_PATH__" alt="kdapp"/>
+          <h1 class="title">Kaspa Auth – First Login</h1>
+        </div>
+        <p class="lead">Welcome! Fund your wallet, then proceed with authentication flows.</p>
+        <div class="row">
+          <div style="min-width: 360px; flex:1;">
+            <div class="label">Kaspa address</div>
+            <code class="addr" id="addr">__ADDRESS__</code>
+            <div class="faucet">Testnet faucet: <a href="https://faucet.kaspanet.io/">faucet.kaspanet.io</a></div>
+            <div class="actions">
+              <button class="btn" onclick="copyAddr()">Copy address</button>
+            </div>
+          </div>
+          <div>
+            <div class="label">QR code</div>
+            <div class="qrbox">
+              <!-- if we have a generated QR, show it; otherwise show a hint -->
+              <img src="file://__QR_PATH__" alt="QR" onerror="this.style.display='none';document.getElementById('qrhint').style.display='block'"/>
+              <div id="qrhint" class="note" style="display:none;">Install <code>qrencode</code> to render QR locally.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function copyAddr(){
+        const el = document.getElementById('addr');
+        const text = el.textContent;
+        navigator.clipboard?.writeText(text).then(()=>{
+          const old = el.textContent; el.textContent = 'Copied!'; setTimeout(()=>el.textContent = old, 900);
+        }).catch(()=>{});
+      }
+      // Optionally hide QR box if qrencode wasn’t used
+      (function(){
+        var status = '__QR_STATUS__';
+        if(status !== 'ok'){
+          // keep hint visible via onerror above
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
