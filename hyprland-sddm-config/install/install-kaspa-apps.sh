@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Script to build and install Kaspa applications
 
@@ -30,46 +31,47 @@ if ! command -v cargo &> /dev/null; then
     exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Repo root is one level up from hyprland-sddm-config
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+APPS_DIR="$REPO_ROOT/applications/kdapps"
+
 # Build and install kaspa-auth
-if [ -d "/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth" ]; then
-    print_status "Building kaspa-auth..."
-    cd /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth
-    cargo build --release
-    
-    if [ $? -eq 0 ]; then
-        print_status "Installing kaspa-auth..."
-        mkdir -p ~/.local/share/kdapps/kaspa-auth
-        cp target/release/kaspa-auth ~/.local/share/kdapps/kaspa-auth/
-        print_success "kaspa-auth installed successfully!"
-    else
-        print_error "Failed to build kaspa-auth"
-    fi
+if [ -d "$APPS_DIR/kaspa-auth" ]; then
+    print_status "Building kaspa-auth (workspace)..."
+    (
+        cd "$APPS_DIR"
+        cargo build --release -p kaspa-auth
+    )
+
+    print_status "Installing kaspa-auth..."
+    mkdir -p "$HOME/.local/share/kdapps/kaspa-auth"
+    cp "$APPS_DIR/target/release/kaspa-auth" "$HOME/.local/share/kdapps/kaspa-auth/"
+    print_success "kaspa-auth installed successfully!"
 else
-    print_error "kaspa-auth directory not found"
+    print_error "kaspa-auth directory not found at $APPS_DIR/kaspa-auth"
 fi
 
 # Build and install kdapp-wallet
-if [ -d "/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kdapp-wallet" ]; then
-    print_status "Building kdapp-wallet..."
-    cd /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kdapp-wallet
-    cargo build --release
-    
-    if [ $? -eq 0 ]; then
-        print_status "Installing kdapp-wallet..."
-        mkdir -p ~/.local/share/kdapps/kdapp-wallet
-        cp target/release/kdapp-wallet ~/.local/share/kdapps/kdapp-wallet/
-        print_success "kdapp-wallet installed successfully!"
-    else
-        print_error "Failed to build kdapp-wallet"
-    fi
+if [ -d "$APPS_DIR/kdapp-wallet" ]; then
+    print_status "Building kdapp-wallet (workspace)..."
+    (
+        cd "$APPS_DIR"
+        cargo build --release -p kdapp-wallet
+    )
+
+    print_status "Installing kdapp-wallet..."
+    mkdir -p "$HOME/.local/share/kdapps/kdapp-wallet"
+    cp "$APPS_DIR/target/release/kdapp-wallet" "$HOME/.local/share/kdapps/kdapp-wallet/"
+    print_success "kdapp-wallet installed successfully!"
 else
-    print_error "kdapp-wallet directory not found"
+    print_error "kdapp-wallet directory not found at $APPS_DIR/kdapp-wallet"
 fi
 
 # Install systemd service files
 print_status "Installing systemd service files..."
-mkdir -p ~/.config/systemd/user
-cp /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/systemd/user/kaspa-auth.service ~/.config/systemd/user/
+mkdir -p "$HOME/.config/systemd/user"
+cp "$REPO_ROOT/hyprland-sddm-config/config/systemd/user/kaspa-auth.service" "$HOME/.config/systemd/user/"
 
 # Reload systemd user services
 print_status "Reloading systemd user services..."

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a command exits with a non-zero status
-set -e
+set -euo pipefail
 
 # Function to print status messages
 print_status() {
@@ -66,15 +66,18 @@ sudo pacman -S --noconfirm \
 print_status "Creating configuration directories..."
 mkdir -p ~/.config/{hypr,waybar,mako,swayosd,backgrounds,clipman,rofi,swaylock}
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
 # Copy configuration files
 print_status "Copying configuration files..."
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/hypr/* ~/.config/hypr/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/waybar/* ~/.config/waybar/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/mako/* ~/.config/mako/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/swayosd/* ~/.config/swayosd/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/clipman/* ~/.config/clipman/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/rofi/* ~/.config/rofi/
-cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/swaylock/* ~/.config/swaylock/
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/hypr/"* "$HOME/.config/hypr/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/waybar/"* "$HOME/.config/waybar/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/mako/"* "$HOME/.config/mako/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/swayosd/"* "$HOME/.config/swayosd/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/clipman/"* "$HOME/.config/clipman/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/rofi/"* "$HOME/.config/rofi/"
+cp -r "$REPO_ROOT/hyprland-sddm-config/config/swaylock/"* "$HOME/.config/swaylock/"
 
 # Create a default background directory
 mkdir -p ~/.config/backgrounds
@@ -91,18 +94,15 @@ sudo systemctl enable NetworkManager
 print_status "Installing Kaspa applications..."
 mkdir -p ~/.local/share/kdapps/
 
-# Copy kaspa-auth if it exists
-if [ -d "/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth" ]; then
-    print_status "Installing kaspa-auth..."
-    mkdir -p ~/.local/share/kdapps/kaspa-auth
-    # We'll need to build it later
+# Prepare app install directories (built later by install-kaspa-apps.sh)
+if [ -d "$REPO_ROOT/applications/kdapps/kaspa-auth" ]; then
+    print_status "Preparing kaspa-auth install directory..."
+    mkdir -p "$HOME/.local/share/kdapps/kaspa-auth"
 fi
 
-# Copy kdapp-wallet if it exists
-if [ -d "/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/applications/kdapps/kdapp-wallet" ]; then
-    print_status "Installing kdapp-wallet..."
-    mkdir -p ~/.local/share/kdapps/kdapp-wallet
-    # We'll need to build it later
+if [ -d "$REPO_ROOT/applications/kdapps/kdapp-wallet" ]; then
+    print_status "Preparing kdapp-wallet install directory..."
+    mkdir -p "$HOME/.local/share/kdapps/kdapp-wallet"
 fi
 
 # Create systemd user services directory

@@ -160,7 +160,7 @@ pub async fn verify_auth(
     }
     
     // Get participant wallet
-    let participant_wallet = crate::wallet::get_wallet_for_command("web-participant", None)
+    let participant_wallet = crate::wallet::get_wallet_for_command("web-participant", None, ".")
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     
     let participant_addr = Address::new(

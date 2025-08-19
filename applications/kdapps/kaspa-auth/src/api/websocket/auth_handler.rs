@@ -281,7 +281,7 @@ impl WsAuthHandler {
         nonce: String,
     ) -> Result<(), Box<dyn std::error::Error>> {
         // Get participant wallet
-        let participant_wallet = crate::wallet::get_wallet_for_command("web-participant", None)?;
+        let participant_wallet = crate::wallet::get_wallet_for_command("web-participant", None, ".")?;
         let participant_addr = Address::new(
             Prefix::Testnet, 
             Version::PubKey, 

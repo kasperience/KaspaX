@@ -19,7 +19,7 @@
 │      # Already authenticated with episode 1378302641                                                                         │
 │                                                                                                                              │
 │      # Terminal 2: Use CLI to submit the large payload directly                                                              │
-│      cd /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/comment-it/test-peer2                                              │
+│      cd ~/projects/kdapp/examples/comment-it/test-peer2                                              │
 │                                                                                                                              │
 │      # Check if the large file is there                                                                                      │
 │      ls -lh KaspaPokerTournament.md                                                                                          │

@@ -6,7 +6,7 @@ default-run = "kdapp-mcp-server"
 
 [dependencies]
 # kdapp crate
-kdapp = { path = "../../kdapp" }
+kdapp = { path = "../kdapp" }
 
 # Dependencies from kdapp workspace
 kaspa-addresses = { workspace = true }

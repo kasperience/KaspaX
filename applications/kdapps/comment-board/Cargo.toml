@@ -30,5 +30,3 @@ sha2 = "0.10.8"
 tokio = { version = "1.37.0", features = ["rt", "macros", "rt-multi-thread"] }
 clap = "4.5.4"
 smallvec = "1.11"
-
-[workspace]

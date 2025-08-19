@@ -96,7 +96,7 @@ I scanned `examples/kaspa-linux/omarchy` and the `kdapps` projects to assess dae
   ```
 - **.desktop launcher** points to a Windows path and has no args. It won’t auto-start on Arch:
   ```1:11:examples/kaspa-linux/omarchy/applications/kdapps/kaspa-auth.desktop
-  Exec=/mnt/c/Users/mariu/Documents/kdapp/kdapp/.../kaspa-auth
+  Exec=/usr/bin/env kaspa-auth
   NoDisplay=true
   ```
 - **No PAM/keyring login wiring**: No evidence of `gnome-keyring-daemon` or PAM entries; no pam modules configured.

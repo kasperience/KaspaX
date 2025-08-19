@@ -2,7 +2,7 @@
 Version=1.0
 Name=KDApp Wallet
 Comment=Kaspa Decentralized Application Wallet
-Exec=/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/omarchy/applications/kdapps/kdapp-wallet/target/release/kdapp-wallet
+Exec=/usr/bin/env kdapp-wallet
 Icon=wallet-filled
 Terminal=false
 Type=Application

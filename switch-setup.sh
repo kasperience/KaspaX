@@ -1,6 +1,10 @@
 #!/bin/bash
+set -euo pipefail
 
 # Script to help users switch between installation approaches
+
+# Resolve repo root (script is at repo root)
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Function to print status messages
 print_status() {
@@ -28,11 +32,11 @@ usage() {
 
 # Check current setup
 check_current_setup() {
-    if [ -f "~/.config/hypr/hyprland.conf" ]; then
+    if [ -f "$HOME/.config/hypr/hyprland.conf" ]; then
         # Check if it's the clean setup or legacy setup
-        if grep -q "hyprland-sddm-config" "~/.config/hypr/hyprland.conf" 2>/dev/null; then
+        if grep -q "hyprland-sddm-config" "$HOME/.config/hypr/hyprland.conf" 2>/dev/null; then
             echo "Current setup: Clean Hyprland+SDDM setup"
-        elif grep -q "omarchy" "~/.config/hypr/hyprland.conf" 2>/dev/null; then
+        elif grep -q "omarchy" "$HOME/.config/hypr/hyprland.conf" 2>/dev/null; then
             echo "Current setup: Legacy Omarchy-based setup (with references removed)"
         else
             echo "Current setup: Custom/Unknown"
@@ -47,45 +51,45 @@ switch_to_clean() {
     print_status "Switching to clean Hyprland+SDDM setup..."
     
     # Backup current config if it exists
-    if [ -d "~/.config/hypr" ]; then
+    if [ -d "$HOME/.config/hypr" ]; then
         print_status "Backing up current Hyprland configuration..."
-        mv ~/.config/hypr ~/.config/hypr.backup.$(date +%s)
+        mv "$HOME/.config/hypr" "$HOME/.config/hypr.backup.$(date +%s)"
     fi
     
     # Copy clean config
     print_status "Copying clean Hyprland+SDDM configuration..."
-    mkdir -p ~/.config/hypr
-    cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/hypr/* ~/.config/hypr/
+    mkdir -p "$HOME/.config/hypr"
+    cp -r "$REPO_ROOT/hyprland-sddm-config/config/hypr/"* "$HOME/.config/hypr/"
     
     # Backup and copy Waybar config
-    if [ -d "~/.config/waybar" ]; then
+    if [ -d "$HOME/.config/waybar" ]; then
         print_status "Backing up current Waybar configuration..."
-        mv ~/.config/waybar ~/.config/waybar.backup.$(date +%s)
+        mv "$HOME/.config/waybar" "$HOME/.config/waybar.backup.$(date +%s)"
     fi
     
     print_status "Copying clean Waybar configuration..."
-    mkdir -p ~/.config/waybar
-    cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/waybar/* ~/.config/waybar/
+    mkdir -p "$HOME/.config/waybar"
+    cp -r "$REPO_ROOT/hyprland-sddm-config/config/waybar/"* "$HOME/.config/waybar/"
     
     # Backup and copy Mako config
-    if [ -d "~/.config/mako" ]; then
+    if [ -d "$HOME/.config/mako" ]; then
         print_status "Backing up current Mako configuration..."
-        mv ~/.config/mako ~/.config/mako.backup.$(date +%s)
+        mv "$HOME/.config/mako" "$HOME/.config/mako.backup.$(date +%s)"
     fi
     
     print_status "Copying clean Mako configuration..."
-    mkdir -p ~/.config/mako
-    cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/mako/* ~/.config/mako/
+    mkdir -p "$HOME/.config/mako"
+    cp -r "$REPO_ROOT/hyprland-sddm-config/config/mako/"* "$HOME/.config/mako/"
     
     # Backup and copy SwayOSD config
-    if [ -d "~/.config/swayosd" ]; then
+    if [ -d "$HOME/.config/swayosd" ]; then
         print_status "Backing up current SwayOSD configuration..."
-        mv ~/.config/swayosd ~/.config/swayosd.backup.$(date +%s)
+        mv "$HOME/.config/swayosd" "$HOME/.config/swayosd.backup.$(date +%s)"
     fi
     
     print_status "Copying clean SwayOSD configuration..."
-    mkdir -p ~/.config/swayosd
-    cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/hyprland-sddm-config/config/swayosd/* ~/.config/swayosd/
+    mkdir -p "$HOME/.config/swayosd"
+    cp -r "$REPO_ROOT/hyprland-sddm-config/config/swayosd/"* "$HOME/.config/swayosd/"
     
     print_success "Switched to clean Hyprland+SDDM setup successfully!"
     echo "You may need to restart your session for changes to take effect."
@@ -96,24 +100,24 @@ switch_to_legacy() {
     print_status "Switching to legacy Omarchy-based setup..."
     
     # Backup current config if it exists
-    if [ -d "~/.config/hypr" ]; then
+    if [ -d "$HOME/.config/hypr" ]; then
         print_status "Backing up current Hyprland configuration..."
-        mv ~/.config/hypr ~/.config/hypr.backup.$(date +%s)
+        mv "$HOME/.config/hypr" "$HOME/.config/hypr.backup.$(date +%s)"
     fi
     
     # Copy legacy config
     print_status "Copying legacy Omarchy-based configuration..."
-    mkdir -p ~/.config/hypr
-    cp -r /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kaspa-linux/kaspax/config/hypr/* ~/.config/hypr/
+    mkdir -p "$HOME/.config/hypr"
+    cp -r "$REPO_ROOT/config/hypr/"* "$HOME/.config/hypr/"
     
     # Backup and copy Waybar config
-    if [ -d "~/.config/waybar" ]; then
+    if [ -d "$HOME/.config/waybar" ]; then
         print_status "Backing up current Waybar configuration..."
-        mv ~/.config/waybar ~/.config/waybar.backup.$(date +%s)
+        mv "$HOME/.config/waybar" "$HOME/.config/waybar.backup.$(date +%s)"
     fi
     
     print_status "Copying legacy Waybar configuration..."
-    mkdir -p ~/.config/waybar
+    mkdir -p "$HOME/.config/waybar"
     # Note: In the legacy setup, Waybar config might be in a different location
     # We'll need to adjust this based on the actual structure
     

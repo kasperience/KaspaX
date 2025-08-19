@@ -14,7 +14,7 @@ Create a foundational, reusable CLI tool and daemon (`kdapp-wallet`) for the Kas
 - Improve user experience by providing a single, system-wide wallet.
 
 ## Development Status (as of 2025-07-26)
-- **Location:** `/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kdapp-wallet`
+- **Location:** `applications/kdapps/kdapp-wallet`
 - **Dependencies Added:**
     - `anyhow`
     - `clap` (with `derive` feature)

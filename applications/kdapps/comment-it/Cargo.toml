@@ -35,5 +35,3 @@ kaspa-hashes = "*"
 kaspa-addresses = "*"
 kaspa-wrpc-client = "*"
 kaspa-rpc-core = "*"
-
-[workspace]

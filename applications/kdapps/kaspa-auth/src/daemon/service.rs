@@ -347,11 +347,16 @@ impl AuthDaemon {
     async fn authenticate(&self, username: &str, peer_url: &str) -> DaemonResponse {
         println!("🔐 Authenticating {} with {}", username, peer_url);
 
-        let wallet = match self.unlocked_identities.lock().unwrap().get(username) {
-            Some(wallet) => wallet.clone(),
-            None => return DaemonResponse::Error {
-                error: format!("Identity '{}' not unlocked", username),
-            },
+        let wallet = {
+            let identities = self.unlocked_identities.lock().unwrap();
+            match identities.get(username) {
+                Some(wallet) => wallet.clone(),
+                None => {
+                    return DaemonResponse::Error {
+                        error: format!("Identity '{}' not unlocked", username),
+                    }
+                }
+            }
         };
 
         let _ = self.event_tx.send(DaemonEvent::AuthenticationStarted {
