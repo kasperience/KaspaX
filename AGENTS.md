@@ -1,0 +1,82 @@
+# KaspaX — Agent Guide
+
+This document orients AI/code agents working inside the KaspaX nested repository. Treat this repo as independent from the parent kdapp workspace, with its own commit history and release cadence.
+
+## Scope & Structure
+- Repo root: `examples/kaspa-linux/kaspax`
+- Key areas:
+  - `applications/kdapps/kaspa-auth/` — app bundle for kaspa-auth integration
+    - `public/` — assets and HTML templates (splash)
+    - `scripts/` — first-login wizard, installers, verifiers
+    - `systemd/` — user service files for the daemon
+  - Docs:
+    - `KASPAX_FIRST_LOGIN.md` — first login + keyring + autostart guide
+    - `applications/kdapps/kaspa-auth/INSTALL.md` — VM-friendly setup (Arch + Hyprland)
+
+This repo is a “distribution surface” for the kdapp ecosystem on Linux — it wires desktop login, autostart, keyring, daemon, and first‑run UX.
+
+## What You Can Change
+- Shell scripts under `applications/kdapps/kaspa-auth/scripts/`:
+  - `kaspa-first-login-wizard.sh` — main first-login flow; ensure daemon running, ensure wallet, show summary, open GUI splash.
+  - `install-first-login-autostart.sh` — installs a `.desktop` entry to run wizard once.
+  - `install-systemd-user.sh` — installs/enables `kaspa-auth.service` for current user.
+  - `verify-first-login.sh` — quick end-to-end checker.
+- Splash UI:
+  - Template: `public/wizard_splash.template.html` (dark palette + kdapp logo)
+  - Launcher: `scripts/show-wizard-splash.sh` (generates temp HTML, optional QR via `qrencode`)
+- Systemd unit:
+  - `systemd/kaspa-auth.service` — matches the CLI path and runtime socket.
+
+Keep changes minimal and focused on Linux desktop integration and UX polish.
+
+## Dependencies & Assumptions
+- Installed CLI: `~/.cargo/bin/kaspa-auth` (built from kdapp: `examples/kaspa-auth`)
+- Desktop session with `xdg-open`
+- `gnome-keyring` + `libsecret` (PAM unlock for Secret Service)
+- Optional: `qrencode` for on-device QR image generation
+- First-run marker: `~/.local/share/kaspa-auth/.first_login_done`
+
+## Conventions
+- Commit style: Conventional commits (e.g., `feat(kaspax): …`, `fix(kaspax): …`, `docs(kaspax): …`).
+- Shell style: `bash`, `set -euo pipefail`, explicit paths, informative logging.
+- Security: never commit secrets; do not hardcode private keys or tokens; default to testnet docs.
+- UX: terminal output via scripts; GUI splash opened with `xdg-open`; keep HTML self-contained.
+
+## Common Tasks
+- Update splash visuals:
+  - Edit `public/wizard_splash.template.html`; keep logo path: `public/assets/kdapp_framework.jpg`.
+  - If adding assets, place them under `public/assets/` and reference via `file://` URIs.
+- Tweak first-run flow:
+  - Edit `scripts/kaspa-first-login-wizard.sh`; preserve marker and daemon startup logic.
+  - Any new wizard step should be safe to retry and idempotent.
+- Service path changes:
+  - Adjust `systemd/kaspa-auth.service` `ExecStart` and mirror the change in docs/scripts.
+
+## Testing
+- Install steps: see `applications/kdapps/kaspa-auth/INSTALL.md`.
+- Quick verification: `scripts/verify-first-login.sh` (checks binary, systemd, socket, wallet, splash).
+- Manual checks:
+  - `~/.cargo/bin/kaspa-auth -- daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"`
+  - `~/.cargo/bin/kaspa-auth --keychain wallet-status --username participant-peer --create`
+
+## Release & Repo Hygiene
+- This is a nested Git repo (separate from parent). Use `git -C examples/kaspa-linux/kaspax …` or `cd` into it before committing/pushing.
+- Remote: `origin` typically points to GitHub (SSH recommended). Example:
+  - `git remote set-url origin git@github.com:<org>/KaspaX.git`
+  - `git push origin main`
+- Avoid making parent-repo wide changes from here; keep scope to KaspaX packaging, docs, and scripts.
+
+## Do/Don’t
+- Do: keep scripts idempotent and resilient; prefer `systemctl --user` integration.
+- Do: document exact commands users copy/paste in INSTALL.md.
+- Don’t: introduce network calls in scripts that run at login (except local `xdg-open`).
+- Don’t: depend on non-standard shells or distro-specific paths without guards.
+
+## Pointers
+- First login guide: `KASPAX_FIRST_LOGIN.md`
+- Install guide: `applications/kdapps/kaspa-auth/INSTALL.md`
+- Splash template: `applications/kdapps/kaspa-auth/public/wizard_splash.template.html`
+- Wizard script: `applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh`
+
+If behavior changes materially, update both guides and the verifier script.
+
