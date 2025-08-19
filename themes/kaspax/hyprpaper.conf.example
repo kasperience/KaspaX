@@ -1,0 +1,6 @@
+preload = ~/.local/share/kaspax/wallpapers/kaspax-1920x1080.png
+wallpaper = , ~/.local/share/kaspax/wallpapers/kaspax-1920x1080.png
+
+# Generate with:
+#   examples/kaspa-linux/kaspax/scripts/theme/render-wallpaper.sh 1920x1080
+

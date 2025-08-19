@@ -1,0 +1,19 @@
+:root {
+  /* Kaspax palette derived from kdapp logo */
+  --bg: #0F1115;        /* background */
+  --card: #151821;      /* surfaces */
+  --border: #25293a;    /* borders */
+  --text: #EAEAEA;      /* primary text */
+  --muted: #9aa4b2;     /* secondary text */
+  --accent: #6ce5a3;    /* accent (green) */
+  --accent-weak: #3fc38a;
+}
+
+/* Utility classes (optional) */
+.bg { background: var(--bg); color: var(--text); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+.muted { color: var(--muted); }
+.accent { color: var(--accent); }
+.btn { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+
