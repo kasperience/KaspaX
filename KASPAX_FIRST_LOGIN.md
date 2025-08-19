@@ -2,6 +2,8 @@
 
 A simple, reliable “login and wallet first” flow for a Hyprland + SDDM Arch desktop. One system password unlocks the OS keyring; kaspa-auth runs as a user daemon and the First Login Wizard shows your wallet address and faucet link.
 
+Note (current default): for setup convenience, the daemon is started in dev mode (file-backed wallet under `~/.local/share/kaspa-auth`). The keyring flow remains documented and is recommended for production.
+
 ## What You Get
 - Kaspa-auth daemon autostarted as a user service (no root)
 - Key stored in the OS keyring (Secret Service)
@@ -33,16 +35,16 @@ exec-once = gnome-keyring-daemon --start --components=secrets,ssh
 ```
 
 ## Install kaspa-auth + Daemon Service
-From this repo’s root (kdapp):
+From this repo’s root:
 
 1) Build/install the binary
 ```
-cargo install --path examples/kaspa-auth --bin kaspa-auth
+cargo install --path applications/kdapps/kaspa-auth --bin kaspa-auth
 ```
 
 2) Install user systemd service
 ```
-bash examples/kaspa-auth/scripts/install-systemd-user.sh
+bash applications/kdapps/kaspa-auth/scripts/install-systemd-user.sh
 # Logs: journalctl --user -u kaspa-auth -f
 ```
 
@@ -51,16 +53,16 @@ The service runs in your user session and places the socket at `$XDG_RUNTIME_DIR
 ## Install First Login Wizard (Autostart)
 Installs an autostart entry that runs once on first login to create/ensure the wallet and show the address.
 ```
-bash examples/kaspa-auth/scripts/install-first-login-autostart.sh
+bash applications/kdapps/kaspa-auth/scripts/install-first-login-autostart.sh
 ```
 Manual one-time run (without relogin):
 ```
-bash examples/kaspa-auth/scripts/kaspa-first-login-wizard.sh
+bash applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh
 ```
 
 What the wizard does:
 - Ensures daemon is running (starts it if needed)
-- Ensures a `participant-peer` keychain wallet exists
+- Ensures a `participant-peer` dev-mode wallet exists (file-backed)
 - Displays the Kaspa address and a faucet link
 - Writes `~/.local/share/kaspa-auth/.first_login_done` to avoid reruns
 
@@ -71,15 +73,15 @@ Disable/Reset:
 ## Verify
 - Daemon status:
 ```
-kaspa-auth -- daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
 ```
 - Ping:
 ```
-kaspa-auth -- daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
 ```
-- Wallet info (OS keyring):
+- Wallet info (dev-mode, creates if missing):
 ```
-kaspa-auth --keychain wallet-status --username participant-peer
+~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create
 ```
 
 ## Operational Model
@@ -91,7 +93,25 @@ kaspa-auth --keychain wallet-status --username participant-peer
 A future optional feature for marketing/security demos: keep a dev-mode key on a removable USB. See:
 - `applications/kdapps/kdapp-wallet/USB_SECURITY_IDEAS.md`
 
-Recommended default remains OS keyring for zero-friction UX.
+Recommended default remains OS keyring for zero-friction UX. Switch back by running the daemon without `--dev-mode` and using `--keychain` in CLI calls.
+
+### Storage Mode Toggle
+- Quick toggle scripts:
+```
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh dev
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh keychain
+```
+- Scripts can honor keychain mode if you export:
+```
+export KASPAX_USE_KEYCHAIN=1
+```
+
+### Import Dev Key → Keychain
+Keep your current dev-mode address by importing its private key into the keychain:
+```
+bash applications/kdapps/kaspa-auth/scripts/import-dev-key-to-keychain.sh --username participant-peer
+```
+Then switch the service to keychain mode and restart.
 
 ## Troubleshooting
 - Keyring not unlocked:

@@ -56,8 +56,8 @@ Keep changes minimal and focused on Linux desktop integration and UX polish.
 - Install steps: see `applications/kdapps/kaspa-auth/INSTALL.md`.
 - Quick verification: `scripts/verify-first-login.sh` (checks binary, systemd, socket, wallet, splash).
 - Manual checks:
-  - `~/.cargo/bin/kaspa-auth -- daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"`
-  - `~/.cargo/bin/kaspa-auth --keychain wallet-status --username participant-peer --create`
+  - `~/.cargo/bin/kaspa-auth daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"`
+  - `~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create`
 
 ## Release & Repo Hygiene
 - This is a nested Git repo (separate from parent). Use `git -C examples/kaspa-linux/kaspax …` or `cd` into it before committing/pushing.
@@ -80,3 +80,31 @@ Keep changes minimal and focused on Linux desktop integration and UX polish.
 
 If behavior changes materially, update both guides and the verifier script.
 
+## Current Status (2025-08-19)
+- Service hardening fix: `ProtectHome=read-only` with `ReadWritePaths=%h/.local/share` to allow running the binary from `~/.cargo/bin` and writing data under `~/.local/share`.
+- Unit runs daemon in dev mode for now: `--dev-mode` with `--data-dir %h/.local/share/kaspa-auth` and socket at `%t/kaspa-auth.sock`.
+- Verifier script gains `--repair` to copy the unit, ensure dirs, reload/enable/start, then run checks.
+- Wizard is idempotent and truly no-ops after `.first_login_done` unless `--force`.
+- CLI usage: remove stray `--` before subcommands (use `kaspa-auth daemon …`).
+
+## Important Conclusions
+- 203/EXEC root cause was `ProtectHome=yes` preventing access to `~`. Fix by setting `ProtectHome=read-only` and allowing writes via `ReadWritePaths`.
+- For first-run UX we use file-backed wallets (`--dev-mode`) so the wizard can create keys without keyring friction. Production should switch back to keyring.
+- Prefer `KASPA_AUTH_DATA_DIR=~/.local/share/kaspa-auth` to keep files in XDG-friendly paths.
+- Autostart entry is safe to keep: it checks a marker and exits quickly on subsequent logins.
+
+## Storage Mode Toggle
+- Runtime scripts honor `KASPAX_USE_KEYCHAIN=1` to use keychain flows.
+- Systemd unit mode can be switched with:
+```
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh dev
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh keychain
+```
+- After switching, run: `systemctl --user daemon-reload && systemctl --user restart kaspa-auth.service` (the script already does this).
+
+## Migration: Dev Key → Keychain
+- Import existing dev-mode key into keyring to keep the same address when switching modes:
+```
+bash applications/kdapps/kaspa-auth/scripts/import-dev-key-to-keychain.sh --username participant-peer
+```
+- Verifies via `kaspa-auth --keychain wallet-status` and requires `secret-tool` (libsecret) with an unlocked keyring.

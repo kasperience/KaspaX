@@ -2,6 +2,8 @@
 
 This guide installs the `kaspa-auth` daemon (user service), sets up the first-login wizard, and verifies everything.
 
+Note: current default runs in dev-mode (file-backed wallet under `~/.local/share/kaspa-auth`) to simplify first-run. Production can switch to keyring mode later.
+
 ## Prerequisites
 - Arch Linux VM or machine
 - Hyprland + SDDM (or other desktop; examples assume SDDM)
@@ -45,10 +47,10 @@ done
 Log out and log in to your desktop session after PAM changes.
 
 ## Build & Install `kaspa-auth`
-From the kdapp workspace root:
+From the KaspaX repo root (`/home/<you>/KaspaX`):
 
 ```
-cargo install --path examples/kaspa-auth --bin kaspa-auth
+cargo install --path applications/kdapps/kaspa-auth --bin kaspa-auth
 ~/.cargo/bin/kaspa-auth --help
 ```
 
@@ -56,9 +58,9 @@ cargo install --path examples/kaspa-auth --bin kaspa-auth
 From this app folder:
 
 ```
-cd examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth
+cd applications/kdapps/kaspa-auth
 scripts/install-systemd-user.sh
-systemctl --user status kaspa-auth
+systemctl --user status kaspa-auth --no-pager -l
 journalctl --user -u kaspa-auth -f
 ```
 
@@ -84,17 +86,49 @@ scripts/show-wizard-splash.sh <kaspa_address>
 Marker file to prevent reruns: `~/.local/share/kaspa-auth/.first_login_done`.
 
 ## Verify
+Fast path (repairs unit, ensures dirs, starts service, then checks):
+```
+bash applications/kdapps/kaspa-auth/scripts/verify-first-login.sh --repair
+bash applications/kdapps/kaspa-auth/scripts/verify-first-login.sh
+```
+
+Manual checks:
 ```
 # Socket present
 ss -lpn | rg kaspa-auth.sock || ls "$XDG_RUNTIME_DIR"/kaspa-auth.sock
 
 # Daemon responds
-~/.cargo/bin/kaspa-auth -- daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
-~/.cargo/bin/kaspa-auth -- daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
 
-# Keychain-backed wallet
-~/.cargo/bin/kaspa-auth --keychain wallet-status --username participant-peer --create
+# Dev-mode wallet (creates if missing and prints address)
+~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create
 ```
+
+### Switch storage mode later
+- Toggle to dev (file):
+```
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh dev
+```
+- Toggle to keychain:
+```
+bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh keychain
+```
+- Scripts can also be forced to keychain by exporting:
+```
+export KASPAX_USE_KEYCHAIN=1
+```
+
+### Migrate dev key to keychain
+Import your existing dev-mode private key into the OS keychain (keeps the same address):
+```
+bash applications/kdapps/kaspa-auth/scripts/import-dev-key-to-keychain.sh --username participant-peer
+# Verify
+~/.cargo/bin/kaspa-auth --keychain wallet-status --username participant-peer
+```
+Notes:
+- Requires `secret-tool` (libsecret) and an unlocked keyring (PAM/gnome-keyring).
+- Default dev key path: `~/.local/share/kaspa-auth/.kaspa-auth/<username>.key`.
 
 You should see the address printed in the terminal. If `qrencode` is installed, the splash shows a QR.
 
@@ -103,6 +137,12 @@ You should see the address printed in the terminal. If `qrencode` is installed, 
 - `xdg-open` not found / splash not opening: install `xdg-utils` and a browser.
 - Systemd user not running: run inside the GUI session; for lingering services: `loginctl enable-linger $USER`.
 - QR missing: install `qrencode`.
+
+If the service doesn’t start:
+```
+systemctl --user status kaspa-auth.service --no-pager -l
+journalctl --user -xeu kaspa-auth.service --no-pager -l
+```
 
 ```
 Paths used by scripts:
@@ -116,4 +156,3 @@ Paths used by scripts:
 - The GUI splash uses `public/assets/kdapp_framework.jpg` for branding and a neutral dark palette with green accents.
 - The first-login wizard opens the splash automatically after printing the address.
 - All scripts are in `scripts/` and can be inspected or modified as needed.
-
