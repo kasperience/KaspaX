@@ -82,7 +82,12 @@ if [ ! -x "$SHOW_SPLASH" ]; then
   chmod +x "$SHOW_SPLASH" || true
 fi
 
-"$SHOW_SPLASH" "$ADDR" || true
+# Pass network hint for address prefix and faucet visibility
+if [ "$MODE_FLAGS" = "--keychain" ]; then
+  KASPA_NETWORK=mainnet "$SHOW_SPLASH" "$ADDR" || true
+else
+  KASPA_NETWORK=testnet "$SHOW_SPLASH" "$ADDR" || true
+fi
 
 mkdir -p "$MARKER_DIR"
 date +%s > "$MARKER_FILE"

@@ -74,7 +74,8 @@ else
   ko "Daemon status failed"
 fi
 
-if "$BIN" daemon send ping --socket-path "$SOCK" >/dev/null 2>&1; then
+# For `daemon send`, flags must come before the subcommand
+if "$BIN" daemon send --socket-path "$SOCK" ping >/dev/null 2>&1; then
   ok "Daemon ping responded"
 else
   ko "Daemon ping failed"

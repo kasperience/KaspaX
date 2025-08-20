@@ -6,6 +6,8 @@ set -euo pipefail
 # - Uses the kdapp framework logo from the repo for branding.
 #
 # Usage: show-wizard-splash.sh <kaspa_address>
+# Env:
+#   KASPA_NETWORK=testnet|mainnet (default: testnet)
 
 if [ "${1-}" = "" ]; then
   echo "Usage: $0 <kaspa_address>" >&2
@@ -20,26 +22,56 @@ APP_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ASSETS_DIR="$APP_ROOT/public/assets"
 LOGO_PATH="$ASSETS_DIR/kdapp_framework.jpg"
 TEMPLATE="$APP_ROOT/public/wizard_splash.template.html"
-PALETTE_CSS="$APP_ROOT/../../themes/kaspax/palette.css"
+PALETTE_CSS="$APP_ROOT/../../../themes/kaspax/palette.css"
 
 TMP_DIR="$(mktemp -d 2>/dev/null || mktemp -d -t kaspa-wizard)"
 HTML_OUT="$TMP_DIR/wizard_splash.html"
 QR_IMG="$TMP_DIR/qr.png"
 
-# Try to generate a QR code if qrencode is available
+# Determine network + prefix for address URI
+NETWORK="${KASPA_NETWORK:-testnet}"
+PREFIX="kaspa"
+NETWORK_LABEL=""
+if [ "$NETWORK" = "testnet" ]; then
+  PREFIX="kaspatest"
+  NETWORK_LABEL="testnet"
+else
+  PREFIX="kaspa"
+  NETWORK_LABEL="mainnet"
+fi
+PREF_ADDR="${PREFIX}:${ADDR}"
+
+# Explorer URL per network (use raw address in path; add network query for testnet)
+if [ "$NETWORK" = "testnet" ]; then
+  EXPLORER_URL="https://explorer.kaspa.org/addresses/${ADDR}?network=testnet-10"
+else
+  EXPLORER_URL="https://explorer.kaspa.org/addresses/${ADDR}"
+fi
+
+# Try to generate a QR code if qrencode is available (use prefixed URI)
 QR_STATUS="missing"
 if command -v qrencode >/dev/null 2>&1; then
-  qrencode -o "$QR_IMG" -s 9 -m 2 "$ADDR" && QR_STATUS="ok" || QR_STATUS="fail"
+  qrencode -o "$QR_IMG" -s 9 -m 2 "$PREF_ADDR" && QR_STATUS="ok" || QR_STATUS="fail"
 fi
 
 # Build HTML from template (fallback to a minimal inline doc if template missing)
 if [ -f "$TEMPLATE" ]; then
+  # Faucet block only on testnet
+  if [ "$NETWORK" = "testnet" ]; then
+    FAUCET_HTML='Testnet faucet: <a href="https://faucet.kaspanet.io/">faucet.kaspanet.io</a>'
+  else
+    FAUCET_HTML=''
+  fi
+
   sed \
-    -e "s#__ADDRESS__#${ADDR//\/\\}#g" \
+    -e "s#__ADDRESS__#${PREF_ADDR//\/\\}#g" \
     -e "s#__LOGO_PATH__#${LOGO_PATH//\/\\}#g" \
     -e "s#__QR_PATH__#${QR_IMG//\/\\}#g" \
     -e "s#__QR_STATUS__#${QR_STATUS}#g" \
     -e "s#__PALETTE_CSS__#${PALETTE_CSS//\/\\}#g" \
+    -e "s#__NETWORK_LABEL__#${NETWORK_LABEL}#g" \
+    -e "s#__FAUCET_BLOCK__#${FAUCET_HTML//\/\\}#g" \
+    -e "s#__EXPLORER_URL__#${EXPLORER_URL//\/\\}#g" \
     "$TEMPLATE" > "$HTML_OUT"
 else
   cat > "$HTML_OUT" <<EOF
@@ -54,9 +86,12 @@ else
     <p style="opacity:.85;">Welcome! Fund your wallet, then proceed with authentication flows.</p>
     <div style="display:flex; gap:24px; margin-top:16px; align-items:center;">
       <div>
-        <div style="font-size:13px; opacity:.7;">Kaspa address</div>
-        <code style="display:block; user-select:all; font-size:15px; background:#0d0f14; padding:12px; border-radius:8px; border:1px solid #25293a;">$ADDR</code>
-        <div style="margin-top:8px; font-size:13px; opacity:.7;">Testnet faucet: <a href="https://faucet.kaspanet.io/" style="color:#6ce5a3">faucet.kaspanet.io</a></div>
+        <div style="font-size:13px; opacity:.7;">Kaspa address <span style=\"font-size:12px; opacity:.75;\">$NETWORK_LABEL</span></div>
+        <code style="display:block; user-select:all; font-size:15px; background:#0d0f14; padding:12px; border-radius:8px; border:1px solid #25293a;">$PREF_ADDR</code>
+        $( [ "$NETWORK" = "testnet" ] && echo '<div style="margin-top:8px; font-size:13px; opacity:.7;">Testnet faucet: <a href="https://faucet.kaspanet.io/" style="color:#6ce5a3">faucet.kaspanet.io</a></div>' )
+        <div style="margin-top:12px; display:flex; gap:12px;">
+          <a href="$EXPLORER_URL" target="_blank" style="text-decoration:none;" class="btn">Open in explorer</a>
+        </div>
       </div>
       <div>
         <div style="font-size:13px; opacity:.7; margin-bottom:8px;">QR code</div>

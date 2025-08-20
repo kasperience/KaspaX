@@ -117,9 +117,14 @@ impl KeychainManager {
         println!("🔐 Loading wallet from OS keychain...");
         
         let private_key_hex = if self.config.dev_mode {
-            let dev_key_file = format!(".kaspa-auth/{}.key", username);
-            if !std::path::Path::new(&dev_key_file).exists() {
-                return Err(format!("Development key file '{}' not found. Please create a wallet in dev mode first.", dev_key_file).into());
+            let dev_key_file = std::path::Path::new(&self.data_dir)
+                .join(".kaspa-auth")
+                .join(format!("{}.key", username));
+            if !dev_key_file.exists() {
+                return Err(format!(
+                    "Development key file '{}' not found. Please create a wallet in dev mode first.",
+                    dev_key_file.display()
+                ).into());
             }
             std::fs::read_to_string(&dev_key_file)?
         } else {
@@ -168,8 +173,10 @@ impl KeychainManager {
     /// Check if wallet exists in keychain
     pub fn wallet_exists(&self, username: &str) -> bool {
         if self.config.dev_mode {
-            let dev_key_file = format!(".kaspa-auth/{}.key", username);
-            std::path::Path::new(&dev_key_file).exists()
+            let dev_key_file = std::path::Path::new(&self.data_dir)
+                .join(".kaspa-auth")
+                .join(format!("{}.key", username));
+            dev_key_file.exists()
         } else {
             match Entry::new(&self.config.service, username) {
                 Ok(entry) => entry.get_password().is_ok(),
@@ -181,10 +188,12 @@ impl KeychainManager {
     /// Delete wallet from keychain
     pub fn delete_wallet(&self, username: &str) -> Result<(), Box<dyn std::error::Error>> {
         if self.config.dev_mode {
-            let dev_key_file = format!(".kaspa-auth/{}.key", username);
-            if std::path::Path::new(&dev_key_file).exists() {
+            let dev_key_file = std::path::Path::new(&self.data_dir)
+                .join(".kaspa-auth")
+                .join(format!("{}.key", username));
+            if dev_key_file.exists() {
                 std::fs::remove_file(&dev_key_file)?;
-                println!("🗑️  Deleted development wallet file: {}", dev_key_file);
+                println!("🗑️  Deleted development wallet file: {}", dev_key_file.display());
             }
         } else {
             let entry = Entry::new(&self.config.service, username)?;
@@ -204,9 +213,9 @@ impl KeychainManager {
         let _current_dir = std::env::current_dir()?;
         
         // Look in .kaspa-auth directory instead of current directory
-        let kaspa_auth_dir = std::path::Path::new(".kaspa-auth");
+        let kaspa_auth_dir = std::path::Path::new(&self.data_dir).join(".kaspa-auth");
         if kaspa_auth_dir.exists() {
-            for entry in std::fs::read_dir(kaspa_auth_dir)? {
+            for entry in std::fs::read_dir(&kaspa_auth_dir)? {
                 let entry = entry?;
                 let filename = entry.file_name().to_string_lossy().to_string();
                 
