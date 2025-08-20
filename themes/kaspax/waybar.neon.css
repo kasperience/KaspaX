@@ -1,0 +1,56 @@
+/* KaspaX Waybar Neon variant (GTK CSS parser friendly) */
+@define-color bg #0A0D10;
+@define-color card #10141C;
+@define-color border #1f2433;
+@define-color text #EAFBF6;
+@define-color muted #9ad9c8;
+@define-color accent #00ffd5; /* brighter teal */
+
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+window#waybar {
+  background: @bg;
+  color: @text;
+  border-bottom: 1px solid @border;
+}
+
+#workspaces button {
+  background: transparent;
+  color: @muted;
+  padding: 6px 10px;
+  margin: 4px 2px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+#workspaces button.active {
+  color: #0A0D10;
+  background: @accent;
+  border-color: @accent;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#workspaces button:hover {
+  color: @accent;
+  border-color: @accent;
+}
+
+#clock, #battery, #pulseaudio, #network, #tray {
+  background: @card;
+  border: 1px solid @border;
+  color: @text;
+  padding: 6px 12px;
+  margin: 6px 6px;
+  border-radius: 12px;
+  border-top: 2px solid @accent;
+}
+
+#clock:hover, #battery:hover, #pulseaudio:hover, #network:hover, #tray:hover {
+  border-color: @accent;
+}
+

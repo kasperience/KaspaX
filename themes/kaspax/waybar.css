@@ -1,0 +1,56 @@
+/* KaspaX Waybar theme (GTK CSS parser friendly) */
+@define-color bg #0F1115;
+@define-color card #151821;
+@define-color border #25293a;
+@define-color text #EAEAEA;
+@define-color muted #9aa4b2;
+/* Teal accent for a more cyberpunk vibe */
+@define-color accent #00e5b0;
+
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+window#waybar {
+  background: @bg;
+  color: @text;
+  border-bottom: 1px solid @border;
+}
+
+#workspaces button {
+  background: transparent;
+  color: @muted;
+  padding: 6px 10px;
+  margin: 4px 2px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+#workspaces button.active {
+  color: #0F1115;
+  background: @accent;
+  border-color: @accent;
+  border-width: 1px;
+  border-style: solid;
+}
+
+#workspaces button:hover {
+  color: @accent;
+  border-color: @accent;
+}
+
+#clock, #battery, #pulseaudio, #network, #tray {
+  background: @card;
+  border: 1px solid @border;
+  color: @text;
+  padding: 6px 10px;
+  margin: 6px 6px;
+  border-radius: 10px;
+  border-top: 2px solid @accent;
+}
+
+#pulseaudio.muted, #network.disconnected {
+  color: @muted;
+}
