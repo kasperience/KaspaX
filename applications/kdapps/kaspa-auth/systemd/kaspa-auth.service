@@ -17,7 +17,8 @@ ProtectSystem=full
 # Home is needed for executing the binary and writing data
 # Use read-only plus an explicit writable path for the data dir
 ProtectHome=read-only
-ReadWritePaths=%h/.local/share
+# Allow writes to data dir and runtime socket dir
+ReadWritePaths=%h/.local/share %t
 PrivateTmp=yes
 
 [Install]
