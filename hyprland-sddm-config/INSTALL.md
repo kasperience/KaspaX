@@ -25,8 +25,8 @@ sudo pacman -S git
 ### 3. Clone the Kaspa Linux repository
 
 ```bash
-git clone https://github.com/kaspa-linux/kaspa-linux.git ~/kaspa-linux
-cd ~/kaspa-linux/examples/kaspa-linux/kaspax/hyprland-sddm-config
+git clone https://github.com/<your-org>/KaspaX.git ~/KaspaX
+cd ~/KaspaX/hyprland-sddm-config
 ```
 
 ### 4. Run the installation script

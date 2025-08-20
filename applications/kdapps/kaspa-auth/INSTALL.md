@@ -52,6 +52,7 @@ From the KaspaX repo root (`/home/<you>/KaspaX`):
 ```
 cargo install --path applications/kdapps/kaspa-auth --bin kaspa-auth
 ~/.cargo/bin/kaspa-auth --help
+systemctl --user restart kaspa-auth.service  # restart to pick up new binary
 ```
 
 ## Enable Daemon (systemd user)
@@ -99,10 +100,17 @@ ss -lpn | rg kaspa-auth.sock || ls "$XDG_RUNTIME_DIR"/kaspa-auth.sock
 
 # Daemon responds
 ~/.cargo/bin/kaspa-auth daemon status --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
-~/.cargo/bin/kaspa-auth daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon send --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock" ping
 
 # Dev-mode wallet (creates if missing and prints address)
 ~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create
+```
+
+### Unlock identity for daemon signing (dev mode)
+In dev mode, unlock caches the identity in the daemon for signing:
+```
+~/.cargo/bin/kaspa-auth daemon send --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock" unlock \
+  --username participant-peer --password devpass
 ```
 
 ### Switch storage mode later

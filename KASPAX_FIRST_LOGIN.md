@@ -77,7 +77,7 @@ Disable/Reset:
 ```
 - Ping:
 ```
-~/.cargo/bin/kaspa-auth daemon send ping --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock"
+~/.cargo/bin/kaspa-auth daemon send --socket-path "$XDG_RUNTIME_DIR/kaspa-auth.sock" ping
 ```
 - Wallet info (dev-mode, creates if missing):
 ```
@@ -130,3 +130,13 @@ Then switch the service to keychain mode and restart.
 
 ---
 This guide tracks the kaspa-auth integration steps to avoid missing pieces during install.
+### Styling / Splash refresh
+- The wizard splash page is generated on demand. To see style/template changes, re-run:
+```
+applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh --force
+```
+or open directly with your address:
+```
+ADDR=$(~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create | rg 'Kaspa Address:' | awk '{print $3}')
+KASPA_NETWORK=testnet applications/kdapps/kaspa-auth/scripts/show-wizard-splash.sh "$ADDR"
+```

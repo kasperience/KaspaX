@@ -30,7 +30,7 @@ If you have not added a migration that installs the binary automatically, build 
 
 ```bash
 mkdir -p ~/.local/share/kdapps/kaspa-auth
-cd ~/.local/share/kaspa-linux/examples/kaspa-linux/kaspax/applications/kdapps/kaspa-auth
+cd ~/KaspaX/applications/kdapps/kaspa-auth
 cargo build --release
 install -Dm755 target/release/kaspa-auth ~/.local/share/kdapps/kaspa-auth/kaspa-auth
 ```
@@ -99,7 +99,5 @@ This pulls from your fork, refreshes configs, and offers to update system packag
 - Service not found: re-copy the unit to `~/.config/systemd/user/` and `daemon-reload`.
 - Keychain errors: ensure `gnome-keyring` packages are installed and the daemon is active in your session.
 - Binary not found: confirm `~/.local/share/kdapps/kaspa-auth/kaspa-auth` exists and is executable.
-
-
 
 

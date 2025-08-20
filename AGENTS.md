@@ -3,7 +3,7 @@
 This document orients AI/code agents working inside the KaspaX nested repository. Treat this repo as independent from the parent kdapp workspace, with its own commit history and release cadence.
 
 ## Scope & Structure
-- Repo root: `examples/kaspa-linux/kaspax`
+- Repo root: `KaspaX`
 - Key areas:
   - `applications/kdapps/kaspa-auth/` — app bundle for kaspa-auth integration
     - `public/` — assets and HTML templates (splash)
@@ -30,7 +30,7 @@ This repo is a “distribution surface” for the kdapp ecosystem on Linux — i
 Keep changes minimal and focused on Linux desktop integration and UX polish.
 
 ## Dependencies & Assumptions
-- Installed CLI: `~/.cargo/bin/kaspa-auth` (built from kdapp: `examples/kaspa-auth`)
+- Installed CLI: `~/.cargo/bin/kaspa-auth` (built from this repo: `applications/kdapps/kaspa-auth`)
 - Desktop session with `xdg-open`
 - `gnome-keyring` + `libsecret` (PAM unlock for Secret Service)
 - Optional: `qrencode` for on-device QR image generation
@@ -60,7 +60,7 @@ Keep changes minimal and focused on Linux desktop integration and UX polish.
   - `~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create`
 
 ## Release & Repo Hygiene
-- This is a nested Git repo (separate from parent). Use `git -C examples/kaspa-linux/kaspax …` or `cd` into it before committing/pushing.
+- Treat this as a standalone repo. `cd KaspaX` before committing/pushing.
 - Remote: `origin` typically points to GitHub (SSH recommended). Example:
   - `git remote set-url origin git@github.com:<org>/KaspaX.git`
   - `git push origin main`
@@ -80,12 +80,12 @@ Keep changes minimal and focused on Linux desktop integration and UX polish.
 
 If behavior changes materially, update both guides and the verifier script.
 
-## Current Status (2025-08-19)
-- Service hardening fix: `ProtectHome=read-only` with `ReadWritePaths=%h/.local/share` to allow running the binary from `~/.cargo/bin` and writing data under `~/.local/share`.
+## Current Status (2025-08-20)
+- Service hardening fix: `ProtectHome=read-only` with `ReadWritePaths=%h/.local/share %t` to allow running the binary from `~/.cargo/bin`, writing under `~/.local/share`, and creating the socket under `$XDG_RUNTIME_DIR`.
 - Unit runs daemon in dev mode for now: `--dev-mode` with `--data-dir %h/.local/share/kaspa-auth` and socket at `%t/kaspa-auth.sock`.
 - Verifier script gains `--repair` to copy the unit, ensure dirs, reload/enable/start, then run checks.
 - Wizard is idempotent and truly no-ops after `.first_login_done` unless `--force`.
-- CLI usage: remove stray `--` before subcommands (use `kaspa-auth daemon …`).
+- CLI usage: remove stray `--` before subcommands; for `daemon send` place flags before the inner action (e.g., `daemon send --socket-path … ping`).
 
 ## Important Conclusions
 - 203/EXEC root cause was `ProtectHome=yes` preventing access to `~`. Fix by setting `ProtectHome=read-only` and allowing writes via `ReadWritePaths`.
