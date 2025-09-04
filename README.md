@@ -57,7 +57,15 @@ A more feature-rich setup based on the Omarchy framework (with all Omarchy refer
 **Installation:**
 See `DEPLOYMENT.md` for detailed installation instructions.
 
+## Development Environment
+
+Choose between a fast CLI-focused dev loop or a full desktop:
+
+- WSL2 (Ubuntu or ArchWSL): Best for coding and running CLI examples without a desktop. Install Rust with `rustup` inside WSL and work entirely within the Linux filesystem (avoid Windows-mounted paths for cargo targets). Systemd user services are limited; prefer the VM if you need them.
+- Arch Linux VM (full Kaspa Linux): Install a minimal Arch VM, then run our installers to overlay Hyprland + SDDM and kdapps. This provides systemd user services, theming, and the intended desktop experience.
+
+See `docs/DEV_ENV_SETUP.md` for step‑by‑step guidance, VM sizing, networking tips, keychain setup, and update workflow.
+
 ## License
 
 Kaspa Linux is released under the [MIT License](https://opensource.org/licenses/MIT).
-
