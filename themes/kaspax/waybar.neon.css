@@ -4,7 +4,7 @@
 @define-color border #1f2433;
 @define-color text #EAFBF6;
 @define-color muted #9ad9c8;
-@define-color accent #00ffd5; /* brighter teal */
+@define-color accent #49EACB; /* Kaspa secondary */
 
 * {
   border: none;

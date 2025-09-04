@@ -5,7 +5,7 @@
 @define-color text #EAEAEA;
 @define-color muted #9aa4b2;
 /* Teal accent for a more cyberpunk vibe */
-@define-color accent #00e5b0;
+@define-color accent #70C7BA; /* Kaspa primary */
 
 * {
   border: none;

@@ -1,12 +1,13 @@
 :root {
-  /* Kaspax palette derived from kdapp logo */
-  --bg: #0F1115;        /* background */
-  --card: #151821;      /* surfaces */
-  --border: #25293a;    /* borders */
-  --text: #EAEAEA;      /* primary text */
-  --muted: #9aa4b2;     /* secondary text */
-  --accent: #6ce5a3;    /* accent (green) */
-  --accent-weak: #3fc38a;
+  /* Kaspa official brand alignment */
+  /* Reference: Primary #70C7BA, Dark #231F20, Neutral #B6B6B6, Secondary #49EACB */
+  --bg: #0F1115;           /* background (kept deeper than #231F20 for contrast) */
+  --card: #151821;         /* surfaces */
+  --border: #25293a;       /* borders (close to #231F20) */
+  --text: #EAEAEA;         /* primary text */
+  --muted: #B6B6B6;        /* neutral gray per brand */
+  --accent: #70C7BA;       /* primary accent (Kaspa primary) */
+  --accent-secondary: #49EACB; /* secondary accent (Kaspa secondary) */
 }
 
 /* Utility classes (optional) */
@@ -16,4 +17,3 @@
 .accent { color: var(--accent); }
 .btn { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
-
