@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+# Exit on errors, unset variables, and pipe failures
+set -euo pipefail
 
 KASPA_LINUX_INSTALL=~/.local/share/kaspa-linux/install
 
