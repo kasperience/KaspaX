@@ -57,6 +57,7 @@ Tips
 ## Configuration
 - `INDEXER_URL`: Base URL for kdapp‑indexer used by the organizer peer (default `http://127.0.0.1:8090`).
 - `INDEX_DB_PATH`: Path for kdapp‑indexer RocksDB (default `.kdapp-indexer-db`).
+- `COMMENT_IT_INTERNAL_URL`: Base URL for internal callbacks when authentication or comments are processed (default `http://127.0.0.1:8080`).
 - Network: Testnet‑10 by default; override node URL in engine/runner as needed.
 
 Run kdapp‑indexer (RocksDB):
@@ -64,6 +65,7 @@ Run kdapp‑indexer (RocksDB):
 
 Run HTTP peer with indexer integration:
 - PowerShell: `$env:INDEXER_URL="http://127.0.0.1:8090"; cargo run -p comment-it -- http-peer --port 8080`
+  (override callbacks: `$env:COMMENT_IT_INTERNAL_URL="https://example.com"; cargo run -p comment-it -- http-peer --port 8080`)
 
 ## Troubleshooting
 - AuthPanel after reload: Ensure `participant_pubkey` is available and `GET /auth/status/{id}?pubkey=…` returns `authenticated: true`; verify `INDEXER_URL` is set and the indexer is running.
