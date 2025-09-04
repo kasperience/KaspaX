@@ -152,3 +152,11 @@ scripts/theme/toggle-waybar-style.sh neon
 scripts/theme/toggle-waybar-style.sh default
 ```
 The script copies the style into `~/.config/waybar/style.css` and signals Waybar to reload.
+
+## Hyprland Profiles (Pretty ⇄ Performance)
+Switch between the full visual profile and a VM/GPU‑friendly performance profile (no blur/shadows):
+```
+scripts/theme/switch-hyprland-profile.sh pretty
+scripts/theme/switch-hyprland-profile.sh performance
+```
+This replaces `~/.config/hypr/kaspax.conf` with the chosen profile, then you can `hyprctl reload`.
