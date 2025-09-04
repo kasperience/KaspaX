@@ -1,16 +1,29 @@
-/* KaspaX Waybar theme (GTK CSS parser friendly) */
-@define-color bg #0F1115;
-@define-color card #151821;
-@define-color border #25293a;
-@define-color text #EAEAEA;
-@define-color muted #9aa4b2;
-/* Teal accent for a more cyberpunk vibe */
-@define-color accent #70C7BA; /* Kaspa primary */
+/*
+ * KaspaX Waybar theme (default)
+ *
+ * This stylesheet follows the GTK CSS syntax accepted by Waybar. It
+ * builds on the centralised palette from palette.css to ensure
+ * consistent colours across the desktop. The design emphasises a
+ * dark minimal aesthetic with restrained teal highlights and high
+ * contrast text.
+ */
+
+@define-color bg        #1A1D21; /* main bar background */
+@define-color surface   #21252B; /* block backgrounds */
+@define-color border    #2A2E35; /* separators and outlines */
+@define-color text      #E6E6E6; /* primary text */
+@define-color muted     #9DA5B1; /* secondary text */
+@define-color accent    #70C7BA; /* primary accent */
+@define-color accent-weak #58BFAF; /* softer accent */
 
 * {
   border: none;
   border-radius: 0;
+  margin: 0;
+  padding: 0;
   min-height: 0;
+  font-family: 'JetBrainsMono Nerd Font', sans-serif;
+  font-size: 13px;
 }
 
 window#waybar {
@@ -19,21 +32,21 @@ window#waybar {
   border-bottom: 1px solid @border;
 }
 
+/* Workspaces */
 #workspaces button {
   background: transparent;
   color: @muted;
   padding: 6px 10px;
   margin: 4px 2px;
-  border: 1px solid transparent;
   border-radius: 8px;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #workspaces button.active {
-  color: #0F1115;
+  color: @bg;
   background: @accent;
   border-color: @accent;
-  border-width: 1px;
-  border-style: solid;
 }
 
 #workspaces button:hover {
@@ -41,16 +54,18 @@ window#waybar {
   border-color: @accent;
 }
 
+/* Module boxes */
 #clock, #battery, #pulseaudio, #network, #tray {
-  background: @card;
-  border: 1px solid @border;
+  background: @surface;
   color: @text;
+  border: 1px solid @border;
+  border-radius: 10px;
   padding: 6px 10px;
   margin: 6px 6px;
-  border-radius: 10px;
   border-top: 2px solid @accent;
 }
 
+/* Muted states */
 #pulseaudio.muted, #network.disconnected {
   color: @muted;
 }

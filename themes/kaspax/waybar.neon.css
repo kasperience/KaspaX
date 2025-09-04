@@ -1,21 +1,35 @@
-/* KaspaX Waybar Neon variant (GTK CSS parser friendly) */
-@define-color bg #0A0D10;
-@define-color card #10141C;
-@define-color border #1f2433;
-@define-color text #EAFBF6;
-@define-color muted #9ad9c8;
-@define-color accent #49EACB; /* Kaspa secondary */
+/*
+ * KaspaX Waybar theme (neon variant)
+ *
+ * The neon style introduces glow effects and uses the secondary
+ * colour from the Kaspa palette for a more vibrant look. Box
+ * shadows provide a subtle neon glow on active elements.
+ */
+
+@define-color bg        #1A1D21;
+@define-color surface   #21252B;
+@define-color border    #2A2E35;
+@define-color text      #E6E6E6;
+@define-color muted     #9DA5B1;
+@define-color accent    #49EACB; /* neon uses secondary */
+@define-color glow      rgba(73, 234, 203, 0.4);
 
 * {
   border: none;
   border-radius: 0;
+  margin: 0;
+  padding: 0;
   min-height: 0;
+  font-family: 'JetBrainsMono Nerd Font', sans-serif;
+  font-size: 13px;
 }
 
 window#waybar {
   background: @bg;
   color: @text;
   border-bottom: 1px solid @border;
+  /* faint neon line along the top of the bar */
+  box-shadow: inset 0 1px 0 0 @accent;
 }
 
 #workspaces button {
@@ -23,16 +37,16 @@ window#waybar {
   color: @muted;
   padding: 6px 10px;
   margin: 4px 2px;
-  border: 1px solid transparent;
-  border-radius: 10px;
+  border: 1px solid @border;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.3s ease;
 }
 
 #workspaces button.active {
-  color: #0A0D10;
+  color: @bg;
   background: @accent;
   border-color: @accent;
-  border-width: 1px;
-  border-style: solid;
+  box-shadow: 0 0 5px @glow, 0 0 10px @glow, 0 0 15px @glow;
 }
 
 #workspaces button:hover {
@@ -41,16 +55,16 @@ window#waybar {
 }
 
 #clock, #battery, #pulseaudio, #network, #tray {
-  background: @card;
-  border: 1px solid @border;
+  background: @surface;
   color: @text;
-  padding: 6px 12px;
+  border-radius: 10px;
+  padding: 6px 10px;
   margin: 6px 6px;
-  border-radius: 12px;
+  border: 1px solid @border;
   border-top: 2px solid @accent;
+  box-shadow: 0 0 5px @glow;
 }
 
-#clock:hover, #battery:hover, #pulseaudio:hover, #network:hover, #tray:hover {
-  border-color: @accent;
+#pulseaudio.muted, #network.disconnected {
+  color: @muted;
 }
-

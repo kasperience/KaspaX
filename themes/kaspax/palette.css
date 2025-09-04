@@ -1,19 +1,32 @@
+/*
+ * Centralised colour palette for the KaspaX cypherpunk theme.
+ *
+ * These CSS custom properties encapsulate the official Kaspa colours
+ * alongside a set of derived tones for backgrounds, surfaces and borders.
+ * Keeping your colours here makes it trivial to adjust the look and
+ * propagate changes across Waybar, Rofi, GTK themes and other CSS‑driven
+ * components.
+ */
 :root {
-  /* Kaspa official brand alignment */
-  /* Reference: Primary #70C7BA, Dark #231F20, Neutral #B6B6B6, Secondary #49EACB */
-  --bg: #0F1115;           /* background (kept deeper than #231F20 for contrast) */
-  --card: #151821;         /* surfaces */
-  --border: #25293a;       /* borders (close to #231F20) */
-  --text: #EAEAEA;         /* primary text */
-  --muted: #B6B6B6;        /* neutral gray per brand */
-  --accent: #70C7BA;       /* primary accent (Kaspa primary) */
-  --accent-secondary: #49EACB; /* secondary accent (Kaspa secondary) */
-}
+  /* Official Kaspa palette */
+  --primary:   #70C7BA; /* primary teal used for highlights */
+  --secondary: #49EACB; /* secondary mint used for neon variant */
+  --dark:      #231F20; /* brand dark neutral */
+  --gray:      #B6B6B6; /* neutral grey for muted text */
 
-/* Utility classes (optional) */
-.bg { background: var(--bg); color: var(--text); }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
-.muted { color: var(--muted); }
-.accent { color: var(--accent); }
-.btn { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
-.btn:hover { border-color: var(--accent); color: var(--accent); }
+  /* Derived theme colours */
+  /* A background deeper than the official dark to improve contrast on OLED and LCD panels. */
+  --bg:     #1A1D21;
+  /* Slightly lighter surface for cards, panels and pop‑ups. */
+  --surface: #21252B;
+  /* Border and separator tone that recedes without disappearing. */
+  --border: #2A2E35;
+  /* High contrast text colour. */
+  --text:   #E6E6E6;
+  /* Secondary text used for muted labels and hints. */
+  --muted:  #9DA5B1;
+
+  /* Accent colours (aliases to the official palette) */
+  --accent:      var(--primary);
+  --accent-weak: #58BFAF; /* a softer teal for subtle decorations */
+}
