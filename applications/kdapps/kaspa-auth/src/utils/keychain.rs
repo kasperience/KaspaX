@@ -1,9 +1,10 @@
 // src/utils/keychain.rs - OS Keychain Integration for Kaspa Auth
 use crate::wallet::{KaspaAuthWallet, WalletConfig};
+use argon2::{password_hash::{PasswordHash, PasswordVerifier}, Argon2};
 use keyring::Entry;
 use rand::rngs::OsRng;
 use secp256k1::{Keypair, Secp256k1, SecretKey};
-use std::fs;
+use std::{fs, path::Path};
 
 pub struct KeychainConfig {
     pub service: String,
@@ -103,10 +104,10 @@ impl KeychainManager {
         println!("🔐 Loading wallet from OS keychain...");
 
         let private_key_hex = if self.config.dev_mode {
-            let dev_key_file = format!(".kaspa-auth/{username}.key");
-            if !std::path::Path::new(&dev_key_file).exists() {
+            let dev_key_file = Path::new(&self.data_dir).join(".kaspa-auth").join(format!("{username}.key"));
+            if !dev_key_file.exists() {
                 return Err(
-                    format!("Development key file '{dev_key_file}' not found. Please create a wallet in dev mode first.").into()
+                    format!("Development key file '{:?}' not found. Please create a wallet in dev mode first.", dev_key_file).into()
                 );
             }
             std::fs::read_to_string(&dev_key_file)?
@@ -132,6 +133,41 @@ impl KeychainManager {
         println!();
 
         Ok(wallet)
+    }
+
+    /// Store hashed password for the given username
+    pub fn store_password_hash(&self, username: &str, hash: &str) -> Result<(), Box<dyn std::error::Error>> {
+        if self.config.dev_mode {
+            let pwd_file = Path::new(&self.data_dir).join(".kaspa-auth").join(format!("{username}.pwd"));
+            if let Some(dir) = pwd_file.parent() {
+                fs::create_dir_all(dir)?;
+            }
+            fs::write(pwd_file, hash)?;
+        } else {
+            let entry = Entry::new(&format!("{}-pwd", self.config.service), username)?;
+            entry.set_password(hash)?;
+        }
+        Ok(())
+    }
+
+    fn load_password_hash(&self, username: &str) -> Result<String, Box<dyn std::error::Error>> {
+        if self.config.dev_mode {
+            let pwd_file = Path::new(&self.data_dir).join(".kaspa-auth").join(format!("{username}.pwd"));
+            Ok(fs::read_to_string(pwd_file)?)
+        } else {
+            let entry = Entry::new(&format!("{}-pwd", self.config.service), username)?;
+            Ok(entry.get_password()?)
+        }
+    }
+
+    /// Verify provided password against stored hash
+    pub fn verify_password(&self, username: &str, password: &str) -> Result<bool, Box<dyn std::error::Error>> {
+        let stored = match self.load_password_hash(username) {
+            Ok(h) => h,
+            Err(e) => return Err(e),
+        };
+        let parsed = PasswordHash::new(&stored)?;
+        Ok(Argon2::default().verify_password(password.as_bytes(), &parsed).is_ok())
     }
 
     /// Load or create wallet with smooth UX

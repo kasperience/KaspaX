@@ -18,6 +18,7 @@ type PlatformStream = UnixStream;
 type PlatformListener = TcpListener;
 #[cfg(windows)]
 type PlatformStream = TcpStream;
+use argon2::{password_hash::{SaltString, PasswordHasher}, Argon2};
 use rand;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::sync::broadcast;
@@ -228,9 +229,18 @@ impl AuthDaemon {
     async fn unlock_identity(&self, username: &str, password: &str) -> DaemonResponse {
         println!("🔓 Unlocking identity: {username}");
 
-        // TODO: Verify password against stored hash
         if password.len() < 4 {
             return DaemonResponse::Error { error: "Password too short".to_string() };
+        }
+
+        match self.keychain_manager.verify_password(username, password) {
+            Ok(true) => {}
+            Ok(false) => {
+                return DaemonResponse::Error { error: "Invalid password".to_string() };
+            }
+            Err(e) => {
+                return DaemonResponse::Error { error: format!("Password verification failed: {e}") };
+            }
         }
 
         // Load identity from keychain
@@ -263,8 +273,21 @@ impl AuthDaemon {
     }
 
     /// Create new authentication identity
-    async fn create_identity(&self, username: &str, _password: &str) -> DaemonResponse {
+    async fn create_identity(&self, username: &str, password: &str) -> DaemonResponse {
         println!("🆕 Creating identity: {username}");
+
+        let salt = SaltString::generate(&mut rand::rngs::OsRng);
+        let argon2 = Argon2::default();
+        let password_hash = match argon2.hash_password(password.as_bytes(), &salt) {
+            Ok(hash) => hash.to_string(),
+            Err(e) => {
+                return DaemonResponse::Error { error: format!("Failed to hash password: {e}") };
+            }
+        };
+
+        if let Err(e) = self.keychain_manager.store_password_hash(username, &password_hash) {
+            return DaemonResponse::Error { error: format!("Failed to store password hash: {e}") };
+        }
 
         // This now correctly saves the wallet to disk.
         match self.keychain_manager.create_wallet(username) {
@@ -520,6 +543,41 @@ impl Clone for AuthDaemon {
             active_sessions: Arc::clone(&self.active_sessions),
             keychain_manager: KeychainManager::new(KeychainConfig::new("kaspa-auth", self.config.dev_mode), &self.config.data_dir),
             event_tx: self.event_tx.clone(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    #[tokio::test]
+    async fn unlock_rejects_incorrect_password() {
+        let dir = tempdir().unwrap();
+        let sock = dir.path().join("daemon.sock");
+        let config = DaemonConfig {
+            data_dir: dir.path().to_str().unwrap().to_string(),
+            socket_path: sock.to_str().unwrap().to_string(),
+            auto_unlock: false,
+            session_timeout: 3600,
+            use_keychain: false,
+            dev_mode: true,
+        };
+
+        let daemon = AuthDaemon::new(config);
+        let username = "test-user";
+
+        // Create identity with known password
+        assert!(matches!(daemon.create_identity(username, "correct").await, DaemonResponse::Success { .. }));
+
+        // Ensure identity is locked
+        let _ = daemon.lock_all_identities().await;
+
+        // Attempt to unlock with wrong password
+        match daemon.unlock_identity(username, "wrong").await {
+            DaemonResponse::Error { error } => assert!(error.to_lowercase().contains("invalid")),
+            other => panic!("expected error, got {:?}", other),
         }
     }
 }
