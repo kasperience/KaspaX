@@ -1,13 +1,13 @@
 // src/api/http/types.rs
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct AuthRequest {
     pub public_key: String,
     pub episode_id: Option<u64>, // For joining existing episodes
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct AuthResponse {
     #[serde(serialize_with = "serialize_u64_as_string")]
     pub episode_id: u64,
@@ -17,7 +17,7 @@ pub struct AuthResponse {
     pub status: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ChallengeRequest {
     #[serde(deserialize_with = "deserialize_u64_flexible")]
     pub episode_id: u64,
@@ -39,7 +39,7 @@ where
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ChallengeResponse {
     #[serde(serialize_with = "serialize_u64_as_string")]
     pub episode_id: u64,
@@ -48,14 +48,14 @@ pub struct ChallengeResponse {
     pub status: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct VerifyRequest {
     pub episode_id: u64,
     pub signature: String,
     pub nonce: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct VerifyResponse {
     #[serde(serialize_with = "serialize_u64_as_string")]
     pub episode_id: u64,
@@ -72,14 +72,14 @@ pub struct EpisodeStatus {
     pub status: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct RevokeSessionRequest {
     pub episode_id: u64,
     pub session_token: String,
     pub signature: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct RevokeSessionResponse {
     #[serde(serialize_with = "serialize_u64_as_string")]
     pub episode_id: u64,

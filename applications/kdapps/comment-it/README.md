@@ -22,6 +22,16 @@ Mode B — HTTP organizer peer (full UI)
 - Open: `http://localhost:8080` (wallet flows + auth + comments)
 - CLI helpers: see `src/cli/organizer_commands.rs` and `TESTING.md`
 
+### Authentication Flow
+
+The organizer now proxies authentication requests to a running `kaspa-auth` service.
+Set `KASPA_AUTH_URL` to point at the service (defaults to `http://127.0.0.1:8901`).
+
+1. `POST /auth/start` – create or join an episode via `kaspa-auth`.
+2. `GET /auth/challenge/:id` – issue a challenge using `kaspa-auth`'s `/auth/request-challenge`.
+3. `POST /auth/verify` – verify the signed nonce and receive a session token.
+4. `POST /auth/revoke-session` – revoke a session through `kaspa-auth`.
+
 ## RPC Reliability (dev)
 - Reuses a shared Kaspa RPC client instance.
 - Retry-on-disconnect for `submit_transaction` (treats "already accepted" as success; retries on transient WebSocket errors and orphan cases).

@@ -12,19 +12,26 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::{broadcast, Mutex};
 use tower_http::{cors::CorsLayer, services::ServeDir};
+use reqwest::Client;
+use serde_json::json;
 
 use crate::comment::{Comment, CommentEpisode};
 
 // Import auth components from our unified comment-it project
 use crate::{
     api::http::types::{
-        AuthRequest, AuthResponse, ChallengeResponse, SubmitCommentRequest, SubmitCommentResponse, VerifyRequest, VerifyResponse,
+        AuthRequest, AuthResponse, ChallengeResponse, RevokeSessionRequest, RevokeSessionResponse,
+        SubmitCommentRequest, SubmitCommentResponse, VerifyRequest, VerifyResponse,
     },
     core::AuthWithCommentsEpisode,
 };
 
 // Additional imports for blockchain integration
 use kdapp::engine::EpisodeMessage;
+
+fn kaspa_auth_url() -> String {
+    std::env::var("KASPA_AUTH_URL").unwrap_or_else(|_| "http://127.0.0.1:8901".to_string())
+}
 
 /// State shared across the unified comment-it organizer peer
 #[derive(Clone)]
@@ -178,19 +185,38 @@ async fn health_check() -> Json<serde_json::Value> {
     }))
 }
 
-/// Start authentication episode (integrated from kaspa-auth)
-async fn start_auth(State(_state): State<OrganizerState>, Json(_req): Json<AuthRequest>) -> Result<Json<AuthResponse>, StatusCode> {
-    info!("🚀 Starting authentication episode (integrated)");
+/// Start authentication episode (forward to kaspa-auth service)
+async fn start_auth(
+    State(_state): State<OrganizerState>,
+    Json(req): Json<AuthRequest>,
+) -> Result<Json<AuthResponse>, StatusCode> {
+    info!("🚀 Starting authentication episode via kaspa-auth service");
 
-    // TODO: Implement using kaspa-auth logic but in integrated way
-    // For now, return a basic response
-    Ok(Json(AuthResponse {
-        episode_id: 12345,
-        organizer_public_key: "placeholder_organizer_public_key".to_string(),
-        participant_kaspa_address: "kaspatest:placeholder".to_string(),
-        transaction_id: Some("integrated_auth_tx".to_string()),
-        status: "episode_created".to_string(),
-    }))
+    let url = format!("{}/auth/start", kaspa_auth_url());
+    let client = Client::new();
+
+    match client.post(&url).json(&req).send().await {
+        Ok(resp) => {
+            if resp.status().is_success() {
+                match resp.json::<AuthResponse>().await {
+                    Ok(data) => Ok(Json(data)),
+                    Err(e) => {
+                        error!("Failed to parse start_auth response: {e}");
+                        Err(StatusCode::BAD_GATEWAY)
+                    }
+                }
+            } else {
+                let status = resp.status();
+                let body = resp.text().await.unwrap_or_default();
+                error!("kaspa-auth start_auth returned {status}: {body}");
+                Err(StatusCode::BAD_GATEWAY)
+            }
+        }
+        Err(e) => {
+            error!("HTTP error calling kaspa-auth start_auth: {e}");
+            Err(StatusCode::BAD_GATEWAY)
+        }
+    }
 }
 
 /// Get challenge for authentication episode
@@ -200,13 +226,32 @@ async fn get_challenge(
 ) -> Result<Json<ChallengeResponse>, StatusCode> {
     info!("🎲 Getting challenge for episode {episode_id}");
 
-    // TODO: Get real challenge from auth episode
-    Ok(Json(ChallengeResponse {
-        episode_id,
-        nonce: format!("auth_challenge_{episode_id}"),
-        transaction_id: Some("challenge_tx".to_string()),
-        status: "challenge_ready".to_string(),
-    }))
+    let url = format!("{}/auth/request-challenge", kaspa_auth_url());
+    let client = Client::new();
+    let payload = json!({"episode_id": episode_id, "public_key": ""});
+
+    match client.post(&url).json(&payload).send().await {
+        Ok(resp) => {
+            if resp.status().is_success() {
+                match resp.json::<ChallengeResponse>().await {
+                    Ok(data) => Ok(Json(data)),
+                    Err(e) => {
+                        error!("Failed to parse challenge response: {e}");
+                        Err(StatusCode::BAD_GATEWAY)
+                    }
+                }
+            } else {
+                let status = resp.status();
+                let body = resp.text().await.unwrap_or_default();
+                error!("kaspa-auth request-challenge returned {status}: {body}");
+                Err(StatusCode::BAD_GATEWAY)
+            }
+        }
+        Err(e) => {
+            error!("HTTP error calling kaspa-auth request-challenge: {e}");
+            Err(StatusCode::BAD_GATEWAY)
+        }
+    }
 }
 
 /// Verify authentication signature
@@ -216,27 +261,65 @@ async fn verify_auth(
 ) -> Result<Json<VerifyResponse>, StatusCode> {
     info!("✅ Verifying authentication for episode {}", req.episode_id);
 
-    // TODO: Implement real signature verification
-    Ok(Json(VerifyResponse {
-        episode_id: req.episode_id,
-        authenticated: true,
-        status: "authenticated".to_string(),
-        transaction_id: Some("verify_tx".to_string()),
-    }))
+    let url = format!("{}/auth/verify", kaspa_auth_url());
+    let client = Client::new();
+
+    match client.post(&url).json(&req).send().await {
+        Ok(resp) => {
+            if resp.status().is_success() {
+                match resp.json::<VerifyResponse>().await {
+                    Ok(data) => Ok(Json(data)),
+                    Err(e) => {
+                        error!("Failed to parse verify response: {e}");
+                        Err(StatusCode::BAD_GATEWAY)
+                    }
+                }
+            } else {
+                let status = resp.status();
+                let body = resp.text().await.unwrap_or_default();
+                error!("kaspa-auth verify returned {status}: {body}");
+                Err(StatusCode::BAD_GATEWAY)
+            }
+        }
+        Err(e) => {
+            error!("HTTP error calling kaspa-auth verify: {e}");
+            Err(StatusCode::BAD_GATEWAY)
+        }
+    }
 }
 
 /// Revoke authentication session
 async fn revoke_session(
     State(_state): State<OrganizerState>,
-    Json(_req): Json<serde_json::Value>,
-) -> Result<Json<serde_json::Value>, StatusCode> {
-    info!("🔄 Revoking session");
+    Json(req): Json<RevokeSessionRequest>,
+) -> Result<Json<RevokeSessionResponse>, StatusCode> {
+    info!("🔄 Revoking session for episode {}", req.episode_id);
 
-    // TODO: Implement session revocation
-    Ok(Json(serde_json::json!({
-        "status": "session_revoked",
-        "message": "Session revoked successfully"
-    })))
+    let url = format!("{}/auth/revoke-session", kaspa_auth_url());
+    let client = Client::new();
+
+    match client.post(&url).json(&req).send().await {
+        Ok(resp) => {
+            if resp.status().is_success() {
+                match resp.json::<RevokeSessionResponse>().await {
+                    Ok(data) => Ok(Json(data)),
+                    Err(e) => {
+                        error!("Failed to parse revoke response: {e}");
+                        Err(StatusCode::BAD_GATEWAY)
+                    }
+                }
+            } else {
+                let status = resp.status();
+                let body = resp.text().await.unwrap_or_default();
+                error!("kaspa-auth revoke-session returned {status}: {body}");
+                Err(StatusCode::BAD_GATEWAY)
+            }
+        }
+        Err(e) => {
+            error!("HTTP error calling kaspa-auth revoke-session: {e}");
+            Err(StatusCode::BAD_GATEWAY)
+        }
+    }
 }
 
 /// Get authentication status for episode
