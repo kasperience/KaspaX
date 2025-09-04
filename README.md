@@ -66,6 +66,10 @@ Choose between a fast CLI-focused dev loop or a full desktop:
 
 See `docs/DEV_ENV_SETUP.md` for step‑by‑step guidance, VM sizing, networking tips, keychain setup, and update workflow.
 
+## Theme Update
+
+We refreshed the KaspaX theme to align accents and neutrals with the official Kaspa palette and improve readability. See `docs/THEME_UPDATE_SUMMARY.md` for a summary and adoption tips.
+
 ## License
 
 Kaspa Linux is released under the [MIT License](https://opensource.org/licenses/MIT).

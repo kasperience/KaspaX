@@ -1,0 +1,88 @@
+/*
+ * KaspaX Rofi theme
+ *
+ * This Rofi theme aligns the application launcher and run menu with the
+ * KaspaX palette. It defines a compact centred window, teal
+ * highlights and high contrast text. Font and icon settings are
+ * specified for consistency with other components. See Rofi
+ * documentation for additional options.
+ */
+
+configuration {
+  font:                 "JetBrainsMono Nerd Font 12";
+  show-icons:           true;
+  icon-theme:           "Papirus-Dark";
+  drun-display-format:  "{icon} {name}";
+  matching:             "fuzzy";
+}
+
+@theme "kaspax" {
+  // palette variables
+  bg:       #1A1D21;
+  surface:  #21252B;
+  border:   #2A2E35;
+  text:     #E6E6E6;
+  muted:    #9DA5B1;
+  accent:   #70C7BA;
+}
+
+* {
+  background-color: @bg;
+  text-color:       @text;
+  border:           0;
+  border-radius:    8px;
+  padding:          0;
+  margin:           0;
+}
+
+window {
+  width:        30%;
+  location:     center;
+  anchor:       center;
+  border:       2px;
+  border-color: @accent;
+  border-radius:12px;
+  background-color: @surface;
+}
+
+inputbar {
+  children: [ prompt, entry ];
+  background-color: @surface;
+  padding:          6px 10px;
+  border-color:     @border;
+  border-radius:    8px;
+}
+
+prompt {
+  background-color: transparent;
+  text-color:       @accent;
+  padding:          0 4px;
+}
+
+entry {
+  background-color: transparent;
+  text-color:       @text;
+  placeholder-color:@muted;
+}
+
+listview {
+  lines:           10;
+  background-color:@surface;
+  spacing:         2px;
+  scrollbar:       false;
+}
+
+element {
+  padding:          6px;
+  border-radius:     6px;
+  background-color:  transparent;
+}
+
+element normal {
+  text-color:       @text;
+}
+
+element selected {
+  background-color: @accent;
+  text-color:       @bg;
+}
