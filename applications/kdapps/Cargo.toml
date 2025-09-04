@@ -28,8 +28,14 @@ rand = "0.8.5"
 secp256k1 = "0.29.1"
 sha2 = "0.10.9"
 thiserror = "1.0.69"
-tokio = "1.45.1"
+tokio = { version = "1.45.1", features = ["rt", "macros", "rt-multi-thread", "net", "signal", "time"] }
 hex = "0.4.3"
+clap = { version = "4.5.40", features = ["derive", "string", "cargo"] }
+
+serde = { version = "1.0.217" }
+kdapp = { path = "kdapp" }
+kaspa-core = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
+workflow-rpc = "0.18.0"
 
 # Kaspa ecosystem crates (pin to tag used elsewhere)
 kaspa-consensus-core = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }

@@ -53,20 +53,30 @@ export async function fetchAndDisplayActiveEpisodes() {
     }
 }
 
-function joinEpisode(episodeId) {
+export function joinEpisode(episodeId) {
     console.log(`Joining episode: ${episodeId}`);
+    const numericEpisodeId = parseInt(episodeId, 10);
+
+    if (isNaN(numericEpisodeId)) {
+        console.error('Invalid episode ID:', episodeId);
+        alert('Error: Invalid room code provided.');
+        return;
+    }
     
     // Set the current episode ID to join the existing episode
-    window.currentEpisodeId = episodeId;
+    window.currentEpisodeId = numericEpisodeId;
     
     // Use proper setter function from authForm module
     import('./authForm.js').then(module => {
-        module.setCurrentEpisodeId(episodeId);
+        module.setCurrentEpisodeId(numericEpisodeId);
     });
     
     // Update UI to reflect joined episode
-    document.getElementById('episodeId').textContent = episodeId;
-    document.getElementById('authEpisodeDisplay').textContent = episodeId;
+    document.getElementById('episodeId').textContent = numericEpisodeId;
+    document.getElementById('authEpisodeDisplay').textContent = numericEpisodeId;
+
+    // Load persistent feed from indexer
+    import('./commentSection.js').then(m => m.loadFeedForEpisode(numericEpisodeId)).catch(()=>{});
     
     // Connect WebSocket to listen for episode events
     import('./authForm.js').then(module => {
@@ -76,20 +86,18 @@ function joinEpisode(episodeId) {
     });
     
     // Check if user is already authenticated - if so, show comment form immediately
-    if (window.isAuthenticated && window.currentSessionToken) {
-        // Already authenticated - can participate immediately
-        document.getElementById('authPanel').style.display = 'none';
-        document.getElementById('commentForm').style.display = 'block';
-        alert(`✅ Joined comment room ${episodeId}! You're already authenticated and can submit comments.`);
-    } else {
-        // Not authenticated - need to authenticate for this episode
-        // Show auth panel but don't create new episode - join existing one
-        document.getElementById('authPanel').style.display = 'block';
-        document.getElementById('commentForm').style.display = 'none';
-        
-        const authButton = document.getElementById('authButton');
-        authButton.textContent = '[ AUTHENTICATE FOR ROOM ]';
-        
-        alert(`Joined comment room ${episodeId}. Click "AUTHENTICATE FOR ROOM" to participate in authenticated comments.`);
+    // Always show comment form; backend enforces auth. Use top bar for auth status.
+    try { document.getElementById('authPanel').style.display = 'none'; } catch {}
+    try { document.getElementById('commentForm').style.display = 'block'; } catch {}
+    try { if (window.updateTopBarAuth) window.updateTopBarAuth(window.isAuthenticated && !!window.currentSessionToken); } catch {}
+
+    // Start silent auth if wallet is available and not already authenticated
+    if (!(window.isAuthenticated && window.currentSessionToken)) {
+        try {
+            if (window.currentWallet && (window.currentWallet.publicKey || window.currentWallet.kaspaAddress)) {
+                console.log('🔁 Starting silent authentication for joined room');
+                import('./authForm.js').then(m => m.requestChallengeAfterEpisodeCreation());
+            }
+        } catch {}
     }
 }

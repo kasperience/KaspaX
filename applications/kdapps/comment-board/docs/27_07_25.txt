@@ -1,3 +1,0 @@
-This document previously contained development logs with Windows-specific absolute paths.
-Content has been redacted to remove Windows path references, since this repo targets Arch Linux.
-If you need the original logs for historical purposes, refer to the project history before this change.

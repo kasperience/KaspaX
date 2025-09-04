@@ -5,8 +5,7 @@ After=network.target
 [Service]
 Type=simple
 # Override this path if you install the binary elsewhere
-Environment=KASPA_AUTH_DATA_DIR=%h/.local/share/kaspa-auth
-ExecStart=%h/.cargo/bin/kaspa-auth --dev-mode daemon start --foreground \
+ExecStart=%h/.cargo/bin/kaspa-auth --keychain daemon start --foreground \
   --socket-path %t/kaspa-auth.sock \
   --data-dir %h/.local/share/kaspa-auth \
   --session-timeout 3600
@@ -14,12 +13,9 @@ Restart=on-failure
 RestartSec=2s
 NoNewPrivileges=yes
 ProtectSystem=full
-# Home is needed for executing the binary and writing data
-# Use read-only plus an explicit writable path for the data dir
-ProtectHome=read-only
-# Allow writes to data dir and runtime socket dir
-ReadWritePaths=%h/.local/share %t
+ProtectHome=yes
 PrivateTmp=yes
 
 [Install]
 WantedBy=default.target
+

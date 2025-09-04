@@ -1,13 +1,13 @@
-use anyhow::{Result, anyhow};
-use keyring::Entry;
-use secp256k1::{Secp256k1, SecretKey, PublicKey};
-use kaspa_addresses::Address;
+use anyhow::{anyhow, Result};
 use hex;
+use kaspa_addresses::Address;
 use kaspa_wrpc_client::prelude::RpcApi;
-use kaspa_wrpc_client::{KaspaRpcClient, WrpcEncoding, Resolver};
 use kaspa_wrpc_client::prelude::{NetworkId, NetworkType};
-use tokio::fs;
+use kaspa_wrpc_client::{KaspaRpcClient, Resolver, WrpcEncoding};
+use keyring::Entry;
 use rand::thread_rng;
+use secp256k1::{PublicKey, Secp256k1, SecretKey};
+use tokio::fs;
 
 const DEV_KEY_FILE: &str = ".kdapp-wallet-dev-key";
 
@@ -21,15 +21,14 @@ pub async fn create_wallet(dev_mode: bool) -> Result<()> {
     if dev_mode {
         println!("\nWARNING: Development mode enabled. Private key will be stored INSECURELY in a local file.\nDO NOT USE FOR REAL FUNDS!\n");
         fs::write(DEV_KEY_FILE, &private_key_hex).await?;
-        println!("Wallet created and private key stored in '{}'.", DEV_KEY_FILE);
+        println!("Wallet created and private key stored in '{DEV_KEY_FILE}'.");
 
         let address = Address::new(
             kaspa_addresses::Prefix::Testnet, // Assuming Testnet for now, can be configurable
             kaspa_addresses::Version::PubKey,
-            &public_key.serialize()[1..] // Remove compression byte for address
+            &public_key.serialize()[1..], // Remove compression byte for address
         );
-        println!("\nWALLET NEEDS FUNDING! Visit https://faucet.kaspanet.io/ and fund: {}", address.to_string());
-
+        println!("\nWALLET NEEDS FUNDING! Visit https://faucet.kaspanet.io/ and fund: {address}");
     } else {
         let service = "kdapp-wallet";
         let username = "default_wallet";
@@ -43,7 +42,7 @@ pub async fn create_wallet(dev_mode: bool) -> Result<()> {
 
 async fn get_private_key(dev_mode: bool) -> Result<String> {
     if dev_mode {
-        if !fs::metadata(DEV_KEY_FILE).await.is_ok() {
+        if fs::metadata(DEV_KEY_FILE).await.is_err() {
             return Err(anyhow!("Development key file '{}' not found. Please create a wallet in dev mode first.", DEV_KEY_FILE));
         }
         Ok(fs::read_to_string(DEV_KEY_FILE).await?)
@@ -62,17 +61,16 @@ pub async fn get_address(dev_mode: bool) -> Result<()> {
 
     let private_key_bytes = hex::decode(&private_key_hex)?;
     let secp = Secp256k1::new();
-    let secret_key = SecretKey::from_slice(&private_key_bytes)
-        .map_err(|e| anyhow!("Failed to deserialize private key: {}", e))?;
+    let secret_key = SecretKey::from_slice(&private_key_bytes).map_err(|e| anyhow!("Failed to deserialize private key: {}", e))?;
     let public_key = PublicKey::from_secret_key(&secp, &secret_key);
 
     let address = Address::new(
         kaspa_addresses::Prefix::Testnet, // Assuming Testnet for now, can be configurable
         kaspa_addresses::Version::PubKey,
-        &public_key.serialize()[1..] // Remove compression byte for address
+        &public_key.serialize()[1..], // Remove compression byte for address
     );
 
-    println!("Wallet Address: {}", address.to_string());
+    println!("Wallet Address: {address}");
 
     Ok(())
 }
@@ -84,24 +82,19 @@ pub async fn get_balance(rpc_url: Option<String>, dev_mode: bool) -> Result<()> 
 
     let private_key_bytes = hex::decode(&private_key_hex)?;
     let secp = Secp256k1::new();
-    let secret_key = SecretKey::from_slice(&private_key_bytes)
-        .map_err(|e| anyhow!("Failed to deserialize private key: {}", e))?;
+    let secret_key = SecretKey::from_slice(&private_key_bytes).map_err(|e| anyhow!("Failed to deserialize private key: {}", e))?;
     let public_key = PublicKey::from_secret_key(&secp, &secret_key);
 
     let address = Address::new(
         kaspa_addresses::Prefix::Testnet, // Assuming Testnet for now, can be configurable
         kaspa_addresses::Version::PubKey,
-        &public_key.serialize()[1..] // Remove compression byte for address
+        &public_key.serialize()[1..], // Remove compression byte for address
     );
 
     // Connect to a Kaspa node
     let network_id = NetworkId::with_suffix(NetworkType::Testnet, 10); // Explicitly use Testnet with suffix 10
 
-    let (resolver, url) = if let Some(url_str) = rpc_url {
-        (None, Some(url_str))
-    } else {
-        (Some(Resolver::default()), None)
-    };
+    let (resolver, url) = if let Some(url_str) = rpc_url { (None, Some(url_str)) } else { (Some(Resolver::default()), None) };
 
     let rpc_client = KaspaRpcClient::new(
         WrpcEncoding::Borsh,

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv:*)",
+      "Bash(find:*)",
+      "Bash(cargo run:*)",
+      "Bash(rg:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git reset:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(pkill:*)",
+      "Bash(grep:*)",
+      "Bash(git rm:*)",
+      "Bash(git push:*)",
+      "Bash(curl:*)",
+      "Bash(cp:*)",
+      "Bash(sed:*)",
+      "Bash(xxd:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(git pull:*)",
+      "WebFetch(domain:kaspa-mdbook.aspectron.com)",
+      "Bash(cargo check:*)",
+      "Bash(touch:*)",
+      "Bash(echo $HISTSIZE)"
+    ],
+    "deny": []
+  }
+}

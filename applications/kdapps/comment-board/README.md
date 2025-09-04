@@ -2,6 +2,12 @@
 
 kdapp example with economic enforcement on Kaspa L1.
 
+## Recent Improvements
+
+- RPC resilience: automatic reconnects in the listener and retry-on-disconnect for submissions to handle transient WebSocket drops without manual restarts.
+- Non-blocking input: participant UI now renders state updates immediately while waiting for input (no aggregation or multi-comment delay).
+- Organizer/participant parity: both sides reflect comments near real time even under intermittent node issues.
+
 ## Features
 
 - **Episode Contracts** - Economic smart contracts on kdapp/Kaspa L1
@@ -21,7 +27,34 @@ kdapp example with economic enforcement on Kaspa L1.
 - **[🔐 Security Analysis](docs/security-analysis.md)** - Threat model, vulnerabilities, and mitigations
 - **[🏗️ Architecture Decisions](docs/architecture-decisions/)** - ADRs documenting major technical choices
 
-**Current Status**: Phase 2.0 Complete - Script-based UTXO locking with cryptographic enforcement
+**Current Status**: Phase 2.0 in progress
+- Default: P2PK bond output in the combined comment transaction (standard-valid, on-chain value enforced by the episode)
+- Experimental: Script-based bonds (timelock/multisig) behind `--script-bonds` flag; may be non-standard until templates are finalized
+
+### Custom Transaction Flow (Script Bonds)
+- For script-based bonds, the client assembles a raw transaction directly instead of using the standard `TransactionGenerator` helper.
+- Why: Script outputs (timelock/multisig) require explicit construction and may be non-standard while templates stabilize.
+- Where: `src/wallet/utxo_manager.rs` — see `submit_comment_with_bond_payload` and the Phase 2.0 helpers for script-based locking.
+- The episode still validates the on-chain value and, once exposed, the script descriptor carried alongside the command.
+
+### CLI Separation (Message vs Wallet)
+- Episode commands are built as `EpisodeMessage::<ContractCommentBoard>` and routed by the generator for standard paths.
+- Wallet/UTXO logic is isolated under `src/wallet/` and never mixes with episode state logic.
+- This separation keeps signing/funding concerns independent from the episode’s state machine and engine.
+
+### Advanced Commands (Optional Feature)
+- Some extended contract commands are gated behind the cargo feature `advanced` to keep the example entry point small by default.
+- Enable them by building or running with the feature flag:
+  - Build: `cargo build -p comment-board --features advanced`
+  - Run: `cargo run -p comment-board --features advanced -- --help`
+
+### UTXO Manager Consolidation
+- Historical “fix” prototypes (`wallet/utxo_manager_fix*.rs`) are now consolidated into the main `wallet/utxo_manager.rs` module.
+- Use `split_large_utxo`, `ensure_micro_utxos`, and Phase 1.2/2.0 helpers in `UtxoLockManager` for current behavior.
+
+### Dev Defaults (Registration Path)
+- When an episode is registered with no participants, a deterministic, non-secret dev stub public key is used only for default initialization.
+- Real rooms derive the creator from the provided participants list; no secret key is embedded or used for signing in this path.
 
 ## 🎮 Usage - Modern CLI Interface
 
@@ -63,11 +96,23 @@ cargo run -- participant --kaspa-private-key <your-key> --room-episode-id 123456
 
 ### 🔒 **Phase 2.0 Script-Based Commands**
 
-#### **`script-bond`** - Blockchain Script Enforcement
+#### **`script-bond`** - Blockchain Script Enforcement (experimental)
 ```
-Creates 100 KAS bond with cryptographic script locking
-Funds locked by blockchain scripts, not application logic
-Episode Contracts with mathematical enforcement
+Creates 100 KAS bond with a script-based output (timelock or multisig)
+Status: experimental; may be rejected by nodes as non-standard until templates are finalized
+Default bonds use P2PK output for standardness; the episode still enforces on-chain value
+
+### Bond Output Types (Technical Overview)
+- P2PK (default):
+  - Why: Standard-valid across nodes; ensures smooth propagation and acceptance
+  - How: Combined comment tx includes an output[0] paying back to the sender’s address for the exact `bond_amount`
+  - Episode Enforcement: Validates `tx_outputs[0].value == bond_amount` for the carrier tx
+  - Trade-off: Not consensus-locked; liquidity is committed at submission time, but spend policy is not enforced by script
+- Script-based (experimental):
+  - Why: Consensus-level enforcement (timelock / moderator multisig)
+  - How: Output script encodes spend conditions; requires finalized kaspa-txscript templates for standardness
+  - Status: Behind `--script-bonds`; may be rejected as non-standard by public nodes until templates are stabilized. Command carries a script descriptor; episode logs and enforces value while script verification is pending.
+  - Descriptor: See `docs/script-descriptor.md` for the compact format carried on-chain and compared by the episode once tx context exposes script bytes.
 ```
 
 #### **`upgrade`** - Script Migration  

@@ -102,9 +102,9 @@ Now, I will focus on implementing the create command, which
  │                                                                    │
  │    Model provided invalid parameters. Error: Path                  │
  │    validation failed: Attempted path                               │
- │    "/home/USER/projects/kdapp/" resolves            │
+ │    "/mnt/c/Users/mariu/Documents/kdapp/kdapp/" resolves            │
  │    outside the allowed root directory                              │
- │    "/home/USER/projects/kdapp/examples/kda          │
+ │    "/mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kda          │
  │    pp-wallet".                                                     │
  ╰────────────────────────────────────────────────────────────────────╯
 ✦ You are absolutely correct! My apologies. I made a mistake by trying
@@ -406,17 +406,17 @@ Now, I will focus on implementing the create command, which
 
 ╭────────────────────────────────────────────────────────────────╮
 │  > but maybe I provided wrong path are we aligned with kdapp   │
-│    framework: /home/USER/projects/kdapp/?             │
+│    framework: /mnt/c/Users/mariu/Documents/kdapp/?             │
 ╰────────────────────────────────────────────────────────────────╯
 
 ✦ Yes, the kdapp-wallet project, located at
-  applications/kdapps/kdapp-wallet, is
+  /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kdapp-wallet, is
   indeed within the broader kdapp framework, which is at
-  ~/projects/kdapp/.
+  /mnt/c/Users/mariu/Documents/kdapp/.
 
   My tools are currently scoped to the kdapp-wallet directory,
   meaning I can only operate within
-  applications/kdapps/kdapp-wallet.
+  /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/kdapp-wallet.
   This is why my previous attempt to search the entire kdapp
   framework failed.
 
@@ -433,12 +433,12 @@ Now, I will focus on implementing the create command, which
 
 ╭──────────────────────────────────────────────────────────────────────╮
 │  > real Kaspa node please, I got some implementations for node like │
-│     in: ~/projects/kdapp/examples/comment-i │
+│     in: /mnt/c/Users/mariu/Documents/kdapp/kdapp/examples/comment-i │
 │    t/src/api/http/blockchain_engine.rs                              │
 ╰──────────────────────────────────────────────────────────────────────╯
 
 ✦ Okay, I understand. You want to replace the simulated balance query
-  with a real one, and you've pointed to a Windows path previously.
+  with a real one, and you've pointed to /mnt/c/Users/mariu/Documents/k
   dapp/kdapp/examples/comment-it/src/api/http/blockchain_engine.rs as a
    reference.
 

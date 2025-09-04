@@ -74,11 +74,10 @@ pub async fn get_comments(
         return Err(StatusCode::NOT_FOUND);
     };
     
-    // This simplified implementation does not persist comments on-chain yet.
-    // Return an empty list to indicate no stored comments.
+    // Return all comments
     Ok(Json(CommentsResponse {
         episode_id,
-        comments: Vec::new(),
-        total_count: 0,
+        comments: episode.comments.clone(),
+        total_count: episode.comments.len(),
     }))
 }

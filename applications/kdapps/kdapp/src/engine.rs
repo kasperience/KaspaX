@@ -6,7 +6,7 @@ use kaspa_consensus_core::Hash;
 use log::*;
 use secp256k1::SecretKey;
 
-use crate::episode::{Episode, EpisodeError, EpisodeEventHandler, EpisodeId, PayloadMetadata};
+use crate::episode::{Episode, EpisodeError, EpisodeEventHandler, EpisodeId, PayloadMetadata, TxOutputInfo};
 use crate::pki::{sign_message, to_message, verify_signature, PubKey, Sig};
 use std::any::type_name;
 use std::collections::hash_map::Entry;
@@ -15,8 +15,11 @@ use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::sync::mpsc::Receiver;
 
-const EPISODE_LIFETIME: u64 = 2592000; // Three days
-const SAMPLE_REMOVAL_TIME: u64 = 432000; // Half a day
+// Durations are expressed in DAA units (~10 increments per second on Kaspa).
+// EPISODE_LIFETIME: ~3 days  => 2,592,000 DAA (approx 259,200 seconds)
+const EPISODE_LIFETIME: u64 = 2592000;
+// SAMPLE_REMOVAL_TIME: ~12 hours => 432,000 DAA (approx 43,200 seconds)
+const SAMPLE_REMOVAL_TIME: u64 = 432000;
 
 pub(crate) struct EpisodeWrapper<G: Episode> {
     pub episode: G,
@@ -80,8 +83,15 @@ impl<G: Episode> EpisodeMessage<G> {
 
 #[derive(Debug, BorshSerialize, BorshDeserialize)]
 pub enum EngineMsg {
-    BlkAccepted { accepting_hash: Hash, accepting_daa: u64, accepting_time: u64, associated_txs: Vec<(Hash, Vec<u8>)> },
-    BlkReverted { accepting_hash: Hash },
+    BlkAccepted {
+        accepting_hash: Hash,
+        accepting_daa: u64,
+        accepting_time: u64,
+        associated_txs: Vec<(Hash, Vec<u8>, Option<Vec<TxOutputInfo>>)>,
+    },
+    BlkReverted {
+        accepting_hash: Hash,
+    },
     Exit,
 }
 
@@ -145,19 +155,19 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                 EngineMsg::BlkAccepted { accepting_hash, accepting_daa, accepting_time, associated_txs } => {
                     self.filter_old_episodes(accepting_daa);
                     let mut revert_vec: Vec<(EpisodeId, PayloadMetadata)> = vec![];
-                    for (tx_id, payload) in associated_txs {
+                    for (tx_id, payload, tx_outputs) in associated_txs {
                         let episode_action: EpisodeMessage<G> = match borsh::from_slice(&payload) {
                             Ok(EpisodeMessage::Revert { episode_id }) => {
-                                warn!("Episode: {}. Illegal revert attempted. Ignoring.", episode_id);
+                                warn!("Episode: {episode_id}. Illegal revert attempted. Ignoring.");
                                 continue;
                             }
                             Ok(episode_action) => episode_action,
                             Err(err) => {
-                                warn!("Payload: {:?} rejected. Parsing error: {}", payload, err);
+                                warn!("Payload: {payload:?} rejected. Parsing error: {err}");
                                 continue;
                             }
                         };
-                        let metadata = PayloadMetadata { accepting_hash, accepting_daa, accepting_time, tx_id };
+                        let metadata = PayloadMetadata { accepting_hash, accepting_daa, accepting_time, tx_id, tx_outputs };
                         if let Some(revert_id) = self.handle_message(episode_action, &metadata, &handlers) {
                             revert_vec.push(revert_id);
                         }
@@ -173,6 +183,7 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                                 accepting_daa: reversion.1.accepting_daa,
                                 accepting_time: reversion.1.accepting_time,
                                 tx_id: reversion.1.tx_id,
+                                tx_outputs: reversion.1.tx_outputs.clone(),
                             };
                             assert_eq!(self.handle_message(episode_action, &metadata, &handlers), None);
                         }
@@ -209,7 +220,7 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
         match episode_action {
             EpisodeMessage::NewEpisode { episode_id, participants } => {
                 if self.episodes.contains_key(&episode_id) {
-                    warn!("Episode with id {} already exists", episode_id);
+                    warn!("Episode with id {episode_id} already exists");
                     return None;
                 }
                 let ew = EpisodeWrapper::<G>::initialize(participants, metadata);
@@ -217,7 +228,7 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                     handler.on_initialize(episode_id, &ew.episode);
                 }
                 self.episodes.insert(episode_id, ew);
-                debug!("Episode {} created.", episode_id);
+                debug!("Episode {episode_id} created.");
                 self.episode_creation_times.insert(episode_id, metadata.accepting_daa);
 
                 return Some((episode_id, metadata.clone()));
@@ -233,11 +244,11 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                             return Some((episode_id, metadata.clone()));
                         }
                         Err(e) => {
-                            warn!("Episode {}: Command {:?} rejected: {}", episode_id, cmd, e)
+                            warn!("Episode {episode_id}: Command {cmd:?} rejected: {e}")
                         }
                     }
                 } else {
-                    warn!("Episode {} not found.", episode_id);
+                    warn!("Episode {episode_id} not found.");
                 }
             }
 
@@ -251,17 +262,17 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                             return Some((episode_id, metadata.clone()));
                         }
                         Err(e) => {
-                            warn!("Episode {}: Command {:?} rejected: {}", episode_id, cmd, e)
+                            warn!("Episode {episode_id}: Command {cmd:?} rejected: {e}")
                         }
                     }
                 } else {
-                    warn!("Episode {} not found.", episode_id);
+                    warn!("Episode {episode_id} not found.");
                 }
             }
 
             EpisodeMessage::Revert { episode_id } => {
                 if let Some(wrapper) = self.episodes.get_mut(&episode_id) {
-                    info!("Episode {}: Reverting command: {:?}", episode_id, metadata.tx_id);
+                    info!("Episode {episode_id}: Reverting command: {:?}", metadata.tx_id);
                     let rollback_result = wrapper.rollback();
                     for handler in handlers.iter() {
                         handler.on_rollback(episode_id, &wrapper.episode);
@@ -272,7 +283,7 @@ impl<G: Episode, H: EpisodeEventHandler<G>> Engine<G, H> {
                         self.episode_creation_times.remove_entry(&episode_id);
                     }
                 } else {
-                    warn!("Episode {} not found.", episode_id);
+                    warn!("Episode {episode_id} not found.");
                 }
                 return None;
             }

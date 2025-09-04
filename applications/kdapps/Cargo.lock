@@ -289,48 +289,11 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 
 [[package]]
 name = "axum"
-version = "0.7.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edca88bc138befd0323b20752846e6587272d3b03b0343c8ea28a6f819e6e71f"
-dependencies = [
- "async-trait",
- "axum-core 0.4.5",
- "base64",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "http-body-util",
- "hyper",
- "hyper-util",
- "itoa",
- "matchit 0.7.3",
- "memchr",
- "mime",
- "percent-encoding",
- "pin-project-lite",
- "rustversion",
- "serde",
- "serde_json",
- "serde_path_to_error",
- "serde_urlencoded",
- "sha1",
- "sync_wrapper",
- "tokio",
- "tokio-tungstenite 0.24.0",
- "tower 0.5.2",
- "tower-layer",
- "tower-service",
- "tracing",
-]
-
-[[package]]
-name = "axum"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "021e862c184ae977658b36c4500f7feac3221ca5da43e3f25bd04ab6c79a29b5"
 dependencies = [
- "axum-core 0.5.2",
+ "axum-core",
  "base64",
  "bytes",
  "form_urlencoded",
@@ -341,7 +304,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "itoa",
- "matchit 0.8.4",
+ "matchit",
  "memchr",
  "mime",
  "percent-encoding",
@@ -355,28 +318,7 @@ dependencies = [
  "sync_wrapper",
  "tokio",
  "tokio-tungstenite 0.26.2",
- "tower 0.5.2",
- "tower-layer",
- "tower-service",
- "tracing",
-]
-
-[[package]]
-name = "axum-core"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09f2bd6146b97ae3359fa0cc6d6b376d9539582c7b4220f041a33ec24c226199"
-dependencies = [
- "async-trait",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "http-body-util",
- "mime",
- "pin-project-lite",
- "rustversion",
- "sync_wrapper",
+ "tower",
  "tower-layer",
  "tower-service",
  "tracing",
@@ -644,16 +586,16 @@ dependencies = [
  "env_logger",
  "faster-hex 0.8.1",
  "itertools 0.13.0",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-rpc-core 0.15.0",
- "kaspa-txscript 0.15.0",
- "kaspa-wrpc-client 0.15.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-core",
+ "kaspa-rpc-core",
+ "kaspa-txscript",
+ "kaspa-wrpc-client",
  "kdapp",
  "log",
  "rand 0.8.5",
- "secp256k1 0.28.2",
+ "secp256k1",
  "serde",
  "sha2",
  "smallvec",
@@ -665,24 +607,24 @@ dependencies = [
 name = "comment-it"
 version = "0.1.0"
 dependencies = [
- "axum 0.7.9",
+ "axum",
  "bincode",
  "borsh",
  "clap",
  "env_logger",
  "futures-util",
  "hex",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-rpc-core 0.15.0",
- "kaspa-wrpc-client 0.15.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-rpc-core",
+ "kaspa-wrpc-client",
  "kdapp",
  "log",
  "rand 0.8.5",
  "rand_chacha 0.3.1",
  "reqwest",
- "secp256k1 0.28.2",
+ "secp256k1",
  "serde",
  "serde_json",
  "serde_with",
@@ -690,8 +632,8 @@ dependencies = [
  "thiserror 1.0.69",
  "tokio",
  "tokio-tungstenite 0.23.1",
- "tower 0.4.13",
- "tower-http 0.5.2",
+ "tower",
+ "tower-http",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1773,22 +1715,6 @@ dependencies = [
 
 [[package]]
 name = "kaspa-addresses"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a74074a802f08fd3e925dd9ada20ba428f8ccbf6539a7f91b2e6de81ba19a95"
-dependencies = [
- "borsh",
- "js-sys",
- "serde",
- "smallvec",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-log",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-addresses"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
@@ -1806,25 +1732,25 @@ dependencies = [
 name = "kaspa-auth"
 version = "0.1.0"
 dependencies = [
- "axum 0.8.4",
+ "axum",
  "bincode",
  "borsh",
  "clap",
  "env_logger",
  "futures-util",
  "hex",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-rpc-core 1.0.0",
- "kaspa-wrpc-client 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-rpc-core",
+ "kaspa-wrpc-client",
  "kdapp",
  "keyring",
  "log",
  "rand 0.8.5",
  "rand_chacha 0.3.1",
  "reqwest",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde_json",
  "serde_with",
@@ -1832,40 +1758,10 @@ dependencies = [
  "thiserror 1.0.69",
  "tokio",
  "tokio-tungstenite 0.23.1",
- "tower 0.5.2",
- "tower-http 0.6.6",
+ "tower",
+ "tower-http",
  "tracing",
  "tracing-subscriber",
-]
-
-[[package]]
-name = "kaspa-consensus-client"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85ee06353801f5bf030a166724738209d2ba5157c2ce6b1ead5367f92e8ef485"
-dependencies = [
- "ahash",
- "cfg-if",
- "faster-hex 0.9.0",
- "hex",
- "itertools 0.13.0",
- "js-sys",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-math 0.15.0",
- "kaspa-txscript 0.15.0",
- "kaspa-utils 0.15.0",
- "kaspa-wasm-core 0.15.0",
- "rand 0.8.5",
- "secp256k1 0.29.1",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-log",
- "workflow-wasm",
 ]
 
 [[package]]
@@ -1879,57 +1775,21 @@ dependencies = [
  "hex",
  "itertools 0.13.0",
  "js-sys",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-math 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-utils 1.0.0",
- "kaspa-wasm-core 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-math",
+ "kaspa-txscript",
+ "kaspa-utils",
+ "kaspa-wasm-core",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
  "thiserror 1.0.69",
  "wasm-bindgen",
  "workflow-log",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-consensus-core"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "720b0a6102c97bc6542b30f4a0289f4dc7051b414973bf44d77be7dca9962128"
-dependencies = [
- "async-trait",
- "borsh",
- "cfg-if",
- "faster-hex 0.9.0",
- "futures-util",
- "getrandom 0.2.16",
- "itertools 0.13.0",
- "js-sys",
- "kaspa-addresses 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-math 0.15.0",
- "kaspa-merkle 0.15.0",
- "kaspa-muhash 0.15.0",
- "kaspa-txscript-errors 0.15.0",
- "kaspa-utils 0.15.0",
- "rand 0.8.5",
- "secp256k1 0.29.1",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "smallvec",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-core",
- "workflow-log",
- "workflow-serializer",
  "workflow-wasm",
 ]
 
@@ -1947,16 +1807,16 @@ dependencies = [
  "getrandom 0.2.16",
  "itertools 0.13.0",
  "js-sys",
- "kaspa-addresses 1.0.0",
- "kaspa-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-math 1.0.0",
- "kaspa-merkle 1.0.0",
- "kaspa-muhash 1.0.0",
- "kaspa-txscript-errors 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-addresses",
+ "kaspa-core",
+ "kaspa-hashes",
+ "kaspa-math",
+ "kaspa-merkle",
+ "kaspa-muhash",
+ "kaspa-txscript-errors",
+ "kaspa-utils",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
@@ -1971,27 +1831,6 @@ dependencies = [
 
 [[package]]
 name = "kaspa-consensus-notify"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27fc65c06b6786f1565990caaa66ad69016af3fccd69761c55552c148369d264"
-dependencies = [
- "async-channel 2.3.1",
- "cfg-if",
- "derive_more",
- "futures",
- "kaspa-consensus-core 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-notify 0.15.0",
- "kaspa-utils 0.15.0",
- "log",
- "paste",
- "thiserror 1.0.69",
- "triggered",
-]
-
-[[package]]
-name = "kaspa-consensus-notify"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
@@ -1999,41 +1838,15 @@ dependencies = [
  "cfg-if",
  "derive_more",
  "futures",
- "kaspa-consensus-core 1.0.0",
- "kaspa-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-notify 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-consensus-core",
+ "kaspa-core",
+ "kaspa-hashes",
+ "kaspa-notify",
+ "kaspa-utils",
  "log",
  "paste",
  "thiserror 1.0.69",
  "triggered",
-]
-
-[[package]]
-name = "kaspa-consensus-wasm"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fc76792205a77daaffebf1ccf1cedbfcc6cfb2e70155b63ee5e116a62b01624"
-dependencies = [
- "cfg-if",
- "faster-hex 0.9.0",
- "js-sys",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-client 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-txscript 0.15.0",
- "kaspa-utils 0.15.0",
- "rand 0.8.5",
- "secp256k1 0.29.1",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-log",
- "workflow-wasm",
 ]
 
 [[package]]
@@ -2044,14 +1857,14 @@ dependencies = [
  "cfg-if",
  "faster-hex 0.9.0",
  "js-sys",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-client 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-client",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-txscript",
+ "kaspa-utils",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
@@ -2059,26 +1872,6 @@ dependencies = [
  "wasm-bindgen",
  "workflow-log",
  "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-core"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "871b65456d7ef10c6f7780f6bf2f28497021097a113031b9e4161a9526fb50c0"
-dependencies = [
- "cfg-if",
- "ctrlc",
- "futures-util",
- "intertrait",
- "log",
- "log4rs",
- "num_cpus",
- "thiserror 1.0.69",
- "tokio",
- "triggered",
- "wasm-bindgen",
- "workflow-log",
 ]
 
 [[package]]
@@ -2103,26 +1896,6 @@ dependencies = [
 
 [[package]]
 name = "kaspa-hashes"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fce9a49e4dccc7f6593ef2451277547435f9a5af59a9e6f5da822a3017ad94c2"
-dependencies = [
- "blake2b_simd",
- "borsh",
- "cc",
- "faster-hex 0.9.0",
- "js-sys",
- "kaspa-utils 0.15.0",
- "keccak",
- "once_cell",
- "serde",
- "sha2",
- "wasm-bindgen",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-hashes"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
@@ -2131,34 +1904,13 @@ dependencies = [
  "cc",
  "faster-hex 0.9.0",
  "js-sys",
- "kaspa-utils 1.0.0",
+ "kaspa-utils",
  "keccak",
  "once_cell",
  "serde",
  "sha2",
  "wasm-bindgen",
  "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-index-core"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e655adb1ae32b14877031143e714e0d86fac010f2fc3dbee811fe6c141b83b5"
-dependencies = [
- "async-channel 2.3.1",
- "async-trait",
- "derive_more",
- "futures",
- "kaspa-consensus-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-notify 0.15.0",
- "kaspa-utils 0.15.0",
- "log",
- "paste",
- "serde",
- "thiserror 1.0.69",
- "triggered",
 ]
 
 [[package]]
@@ -2170,36 +1922,15 @@ dependencies = [
  "async-trait",
  "derive_more",
  "futures",
- "kaspa-consensus-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-notify 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-notify",
+ "kaspa-utils",
  "log",
  "paste",
  "serde",
  "thiserror 1.0.69",
  "triggered",
-]
-
-[[package]]
-name = "kaspa-math"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba496c4b99439bda34dbb1772a484141cd6efa6c79be6f942a0f15cbaeb49ad8"
-dependencies = [
- "borsh",
- "faster-hex 0.9.0",
- "js-sys",
- "kaspa-utils 0.15.0",
- "malachite-base",
- "malachite-nz",
- "serde",
- "serde-wasm-bindgen",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-core",
- "workflow-log",
- "workflow-wasm",
 ]
 
 [[package]]
@@ -2210,7 +1941,7 @@ dependencies = [
  "borsh",
  "faster-hex 0.9.0",
  "js-sys",
- "kaspa-utils 1.0.0",
+ "kaspa-utils",
  "malachite-base",
  "malachite-nz",
  "serde",
@@ -2224,29 +1955,10 @@ dependencies = [
 
 [[package]]
 name = "kaspa-merkle"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9fb0c676bf3644a7b68d11a8eb8fa6f9f5f63b4988af2a9b9d9c1a5b2f9d1846"
-dependencies = [
- "kaspa-hashes 0.15.0",
-]
-
-[[package]]
-name = "kaspa-merkle"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
- "kaspa-hashes 1.0.0",
-]
-
-[[package]]
-name = "kaspa-mining-errors"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3aed9034ee0a2a08107298881449e603d2c7a32c0fda1cd26ab8a4fd3a74c904"
-dependencies = [
- "kaspa-consensus-core 0.15.0",
- "thiserror 1.0.69",
+ "kaspa-hashes",
 ]
 
 [[package]]
@@ -2254,20 +1966,8 @@ name = "kaspa-mining-errors"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
- "kaspa-consensus-core 1.0.0",
+ "kaspa-consensus-core",
  "thiserror 1.0.69",
-]
-
-[[package]]
-name = "kaspa-muhash"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7c87c84de741d13b2ee62ef30442d8419f4f8f5d20ac2419c1eb0ae9aac690c0"
-dependencies = [
- "kaspa-hashes 0.15.0",
- "kaspa-math 0.15.0",
- "rand_chacha 0.3.1",
- "serde",
 ]
 
 [[package]]
@@ -2275,43 +1975,10 @@ name = "kaspa-muhash"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
- "kaspa-hashes 1.0.0",
- "kaspa-math 1.0.0",
+ "kaspa-hashes",
+ "kaspa-math",
  "rand_chacha 0.3.1",
  "serde",
-]
-
-[[package]]
-name = "kaspa-notify"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e861903133d00283bc49c608e49a7f65503160baf5f70ed2592e4fb2bf1e92be"
-dependencies = [
- "async-channel 2.3.1",
- "async-trait",
- "borsh",
- "derive_more",
- "futures",
- "futures-util",
- "indexmap 2.9.0",
- "itertools 0.13.0",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-txscript 0.15.0",
- "kaspa-txscript-errors 0.15.0",
- "kaspa-utils 0.15.0",
- "log",
- "parking_lot",
- "paste",
- "rand 0.8.5",
- "serde",
- "thiserror 1.0.69",
- "triggered",
- "workflow-core",
- "workflow-log",
- "workflow-serializer",
 ]
 
 [[package]]
@@ -2327,13 +1994,13 @@ dependencies = [
  "futures-util",
  "indexmap 2.9.0",
  "itertools 0.13.0",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-txscript-errors 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-core",
+ "kaspa-hashes",
+ "kaspa-txscript",
+ "kaspa-txscript-errors",
+ "kaspa-utils",
  "log",
  "parking_lot",
  "paste",
@@ -2344,49 +2011,6 @@ dependencies = [
  "workflow-core",
  "workflow-log",
  "workflow-serializer",
-]
-
-[[package]]
-name = "kaspa-rpc-core"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "698d0342f531853b78ad17d303e41de77b9d85e22ac52acf0a085c3165f2bf2a"
-dependencies = [
- "async-channel 2.3.1",
- "async-trait",
- "borsh",
- "cfg-if",
- "derive_more",
- "downcast",
- "faster-hex 0.9.0",
- "hex",
- "js-sys",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-client 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-consensus-notify 0.15.0",
- "kaspa-consensus-wasm 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-index-core 0.15.0",
- "kaspa-math 0.15.0",
- "kaspa-mining-errors 0.15.0",
- "kaspa-notify 0.15.0",
- "kaspa-rpc-macros 0.15.0",
- "kaspa-txscript 0.15.0",
- "kaspa-utils 0.15.0",
- "log",
- "paste",
- "rand 0.8.5",
- "serde",
- "serde-wasm-bindgen",
- "smallvec",
- "thiserror 1.0.69",
- "uuid 1.17.0",
- "wasm-bindgen",
- "workflow-core",
- "workflow-serializer",
- "workflow-wasm",
 ]
 
 [[package]]
@@ -2403,20 +2027,20 @@ dependencies = [
  "faster-hex 0.9.0",
  "hex",
  "js-sys",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-client 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-consensus-notify 1.0.0",
- "kaspa-consensus-wasm 1.0.0",
- "kaspa-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-index-core 1.0.0",
- "kaspa-math 1.0.0",
- "kaspa-mining-errors 1.0.0",
- "kaspa-notify 1.0.0",
- "kaspa-rpc-macros 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-utils 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-client",
+ "kaspa-consensus-core",
+ "kaspa-consensus-notify",
+ "kaspa-consensus-wasm",
+ "kaspa-core",
+ "kaspa-hashes",
+ "kaspa-index-core",
+ "kaspa-math",
+ "kaspa-mining-errors",
+ "kaspa-notify",
+ "kaspa-rpc-macros",
+ "kaspa-txscript",
+ "kaspa-utils",
  "log",
  "paste",
  "rand 0.8.5",
@@ -2429,20 +2053,6 @@ dependencies = [
  "workflow-core",
  "workflow-serializer",
  "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-rpc-macros"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2062739f11dca72629f0b30c61387672e36668ab72994471522c8652de0b833"
-dependencies = [
- "convert_case 0.6.0",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "regex",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -2460,38 +2070,6 @@ dependencies = [
 
 [[package]]
 name = "kaspa-txscript"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e669f2ac7595022d3b1835d246d8419a088a8ef95795063a0245e64fd5fc962"
-dependencies = [
- "blake2b_simd",
- "borsh",
- "cfg-if",
- "hexplay",
- "indexmap 2.9.0",
- "itertools 0.13.0",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-hashes 0.15.0",
- "kaspa-txscript-errors 0.15.0",
- "kaspa-utils 0.15.0",
- "kaspa-wasm-core 0.15.0",
- "log",
- "parking_lot",
- "rand 0.8.5",
- "secp256k1 0.29.1",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "sha2",
- "smallvec",
- "thiserror 1.0.69",
- "wasm-bindgen",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-txscript"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
@@ -2501,16 +2079,16 @@ dependencies = [
  "hexplay",
  "indexmap 2.9.0",
  "itertools 0.13.0",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-hashes 1.0.0",
- "kaspa-txscript-errors 1.0.0",
- "kaspa-utils 1.0.0",
- "kaspa-wasm-core 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-hashes",
+ "kaspa-txscript-errors",
+ "kaspa-utils",
+ "kaspa-wasm-core",
  "log",
  "parking_lot",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
@@ -2523,52 +2101,11 @@ dependencies = [
 
 [[package]]
 name = "kaspa-txscript-errors"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28df66c9fe89ca3438a28dc0735b846ea03c2a77ceaaf23323df6afd2b66b76b"
-dependencies = [
- "secp256k1 0.29.1",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "kaspa-txscript-errors"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
- "secp256k1 0.29.1",
+ "secp256k1",
  "thiserror 1.0.69",
-]
-
-[[package]]
-name = "kaspa-utils"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d01767827fd2b35cdc30425c6af9cbf21338c6cd47c9135d150d7aa9733e8bd8"
-dependencies = [
- "arc-swap",
- "async-channel 2.3.1",
- "borsh",
- "cfg-if",
- "duct",
- "event-listener 2.5.3",
- "faster-hex 0.9.0",
- "ipnet",
- "itertools 0.13.0",
- "log",
- "mac_address",
- "num_cpus",
- "once_cell",
- "parking_lot",
- "rlimit",
- "serde",
- "sha2",
- "smallvec",
- "sysinfo",
- "thiserror 1.0.69",
- "triggered",
- "uuid 1.17.0",
- "wasm-bindgen",
 ]
 
 [[package]]
@@ -2603,19 +2140,6 @@ dependencies = [
 
 [[package]]
 name = "kaspa-wasm-core"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b23d8a996f17e8e2dc52e65764b1cc9186cdec333d6ed23266c2ccd2bceae9e"
-dependencies = [
- "faster-hex 0.9.0",
- "hexplay",
- "js-sys",
- "wasm-bindgen",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-wasm-core"
 version = "1.0.0"
 source = "git+https://github.com/kaspanet/rusty-kaspa.git?tag=v1.0.0#eb71df4d284593fccd1342094c37edc8c000da85"
 dependencies = [
@@ -2623,44 +2147,6 @@ dependencies = [
  "hexplay",
  "js-sys",
  "wasm-bindgen",
- "workflow-wasm",
-]
-
-[[package]]
-name = "kaspa-wrpc-client"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4168e922ee3e43f4fc2f1ccc5f97e2acceb11a490daa683223108e582ed250ce"
-dependencies = [
- "async-std",
- "async-trait",
- "borsh",
- "cfg-if",
- "futures",
- "js-sys",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-consensus-wasm 0.15.0",
- "kaspa-notify 0.15.0",
- "kaspa-rpc-core 0.15.0",
- "kaspa-rpc-macros 0.15.0",
- "paste",
- "rand 0.8.5",
- "regex",
- "rustls",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "thiserror 1.0.69",
- "toml",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "workflow-core",
- "workflow-dom",
- "workflow-http",
- "workflow-log",
- "workflow-rpc",
- "workflow-serializer",
  "workflow-wasm",
 ]
 
@@ -2675,12 +2161,12 @@ dependencies = [
  "cfg-if",
  "futures",
  "js-sys",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-consensus-wasm 1.0.0",
- "kaspa-notify 1.0.0",
- "kaspa-rpc-core 1.0.0",
- "kaspa-rpc-macros 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-consensus-wasm",
+ "kaspa-notify",
+ "kaspa-rpc-core",
+ "kaspa-rpc-macros",
  "paste",
  "rand 0.8.5",
  "regex",
@@ -2709,14 +2195,14 @@ dependencies = [
  "env_logger",
  "faster-hex 0.8.1",
  "itertools 0.13.0",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-rpc-core 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-wrpc-client 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-rpc-core",
+ "kaspa-txscript",
+ "kaspa-wrpc-client",
  "log",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "sha2",
  "thiserror 1.0.69",
  "tokio",
@@ -2733,15 +2219,15 @@ dependencies = [
  "faster-hex 0.8.1",
  "hex",
  "itertools 0.13.0",
- "kaspa-addresses 1.0.0",
- "kaspa-consensus-core 1.0.0",
- "kaspa-rpc-core 1.0.0",
- "kaspa-txscript 1.0.0",
- "kaspa-wrpc-client 1.0.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-rpc-core",
+ "kaspa-txscript",
+ "kaspa-wrpc-client",
  "kdapp",
  "log",
  "rand 0.8.5",
- "secp256k1 0.29.1",
+ "secp256k1",
  "serde",
  "serde_json",
  "sha2",
@@ -2756,14 +2242,14 @@ dependencies = [
  "anyhow",
  "clap",
  "hex",
- "kaspa-addresses 0.15.0",
- "kaspa-consensus-core 0.15.0",
- "kaspa-core 0.15.0",
- "kaspa-rpc-core 0.15.0",
- "kaspa-wrpc-client 0.15.0",
+ "kaspa-addresses",
+ "kaspa-consensus-core",
+ "kaspa-core",
+ "kaspa-rpc-core",
+ "kaspa-wrpc-client",
  "keyring",
  "rand 0.8.5",
- "secp256k1 0.28.2",
+ "secp256k1",
  "tokio",
  "workflow-rpc",
 ]
@@ -2959,12 +2445,6 @@ checksum = "943968aefb9b0fdf36cccc03f6cd9d6698b23574ab49eccc185ae6c5cb6ad43e"
 dependencies = [
  "futures",
 ]
-
-[[package]]
-name = "matchit"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e7465ac9959cc2b1404e8e2367b43684a6d13790fe23056cc8c6c5a6b7bcb94"
 
 [[package]]
 name = "matchit"
@@ -3651,8 +3131,8 @@ dependencies = [
  "tokio",
  "tokio-native-tls",
  "tokio-rustls",
- "tower 0.5.2",
- "tower-http 0.6.6",
+ "tower",
+ "tower-http",
  "tower-service",
  "url",
  "wasm-bindgen",
@@ -3806,32 +3286,13 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "secp256k1"
-version = "0.28.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d24b59d129cdadea20aea4fb2352fa053712e5d713eee47d700cd4b2bc002f10"
-dependencies = [
- "rand 0.8.5",
- "secp256k1-sys 0.9.2",
-]
-
-[[package]]
-name = "secp256k1"
 version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9465315bc9d4566e1724f0fffcbcc446268cb522e60f9a27bcded6b19c108113"
 dependencies = [
  "rand 0.8.5",
- "secp256k1-sys 0.10.1",
+ "secp256k1-sys",
  "serde",
-]
-
-[[package]]
-name = "secp256k1-sys"
-version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5d1746aae42c19d583c3c1a8c646bfad910498e2051c551a7f2e3c0c9fbb7eb"
-dependencies = [
- "cc",
 ]
 
 [[package]]
@@ -4053,9 +3514,9 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "signal-hook-registry"
-version = "1.4.5"
+version = "1.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9203b8055f63a2a00e2f593bb0510367fe707d7ff1e5c872de2f537b339e5410"
+checksum = "b2a4719bff48cee6b39d12c020eeb490953ad2443b7055bd0b21fca26bd8c28b"
 dependencies = [
  "libc",
 ]
@@ -4332,7 +3793,6 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
- "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
@@ -4387,18 +3847,6 @@ dependencies = [
  "tokio-rustls",
  "tungstenite 0.23.0",
  "webpki-roots 0.26.11",
-]
-
-[[package]]
-name = "tokio-tungstenite"
-version = "0.24.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edc5f74e248dc973e0dbb7b74c7e0d6fcc301c694ff50049504004ef4d0cdcd9"
-dependencies = [
- "futures-util",
- "log",
- "tokio",
- "tungstenite 0.24.0",
 ]
 
 [[package]]
@@ -4469,17 +3917,6 @@ checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
 
 [[package]]
 name = "tower"
-version = "0.4.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8fa9be0de6cf49e536ce1851f987bd21a43b771b09473c3549a6c853db37c1c"
-dependencies = [
- "tower-layer",
- "tower-service",
- "tracing",
-]
-
-[[package]]
-name = "tower"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d039ad9159c98b70ecfd540b2573b97f7f52c3e8d9f8ad57a24b916a536975f9"
@@ -4489,31 +3926,6 @@ dependencies = [
  "pin-project-lite",
  "sync_wrapper",
  "tokio",
- "tower-layer",
- "tower-service",
- "tracing",
-]
-
-[[package]]
-name = "tower-http"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e9cd434a998747dd2c4276bc96ee2e0c7a2eadf3cae88e52be55a05fa9053f5"
-dependencies = [
- "bitflags",
- "bytes",
- "futures-util",
- "http",
- "http-body",
- "http-body-util",
- "http-range-header",
- "httpdate",
- "mime",
- "mime_guess",
- "percent-encoding",
- "pin-project-lite",
- "tokio",
- "tokio-util",
  "tower-layer",
  "tower-service",
  "tracing",
@@ -4541,7 +3953,7 @@ dependencies = [
  "pin-project-lite",
  "tokio",
  "tokio-util",
- "tower 0.5.2",
+ "tower",
  "tower-layer",
  "tower-service",
  "tracing",
@@ -4645,24 +4057,6 @@ dependencies = [
  "rand 0.8.5",
  "rustls",
  "rustls-pki-types",
- "sha1",
- "thiserror 1.0.69",
- "utf-8",
-]
-
-[[package]]
-name = "tungstenite"
-version = "0.24.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18e5b8366ee7a95b16d32197d0b2604b43a0be89dc5fac9f8e96ccafbaedda8a"
-dependencies = [
- "byteorder",
- "bytes",
- "data-encoding",
- "http",
- "httparse",
- "log",
- "rand 0.8.5",
  "sha1",
  "thiserror 1.0.69",
  "utf-8",

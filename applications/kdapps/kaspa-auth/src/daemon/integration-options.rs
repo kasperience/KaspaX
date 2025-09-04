@@ -36,7 +36,7 @@ impl Commands {
             
             // ADD: New WebSocket server command
             Commands::WebSocketPeer(cmd) => {
-                let wallet = get_wallet_for_command("websocket-peer", cmd.key.as_deref(), ".")?;
+                let wallet = get_wallet_for_command("websocket-peer", cmd.key.as_deref())?;
                 crate::api::websocket::start_ws_auth_server(wallet.keypair, cmd.port).await
             },
             

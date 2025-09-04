@@ -5,34 +5,34 @@ edition = "2021"
 
 [dependencies]
 kdapp = { path = "../kdapp" }
-borsh = "1.5.7"
-secp256k1 = { version = "0.29.1", features = ["rand-std"] }
-rand = "0.8.5"
-rand_chacha = "0.3.1"
-log = "0.4.27"
-env_logger = "0.11.8"
-clap = { version = "4.5.40", features = ["derive"] }
-thiserror = "1.0.69"
-tokio = { version = "1.45.1", features = ["full"] }
-sha2 = "0.10.9"
-serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
-serde_with = { version = "3.14.0", features = ["macros", "hex"] }
+borsh = { workspace = true }
+secp256k1 = { workspace = true }
+rand = { workspace = true }
+rand_chacha = "0.3"
+log = { workspace = true }
+env_logger = { workspace = true }
+clap = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+sha2 = { workspace = true }
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
+serde_with = { version = "3.9.0", features = ["macros", "hex"] }
 hex = "0.4.3"
-reqwest = { version = "0.12.20", features = ["json"] }
-axum = { version = "0.8.4", features = ["ws", "tokio"] }
-tower = "0.5.2"
-tower-http = { version = "0.6.6", features = ["cors", "fs"] }
-futures-util = "0.3.31"
-tokio-tungstenite = "0.23.1"
-tracing = "0.1.41"
-tracing-subscriber = "0.3.19"
-bincode = "1.3.3"
-keyring = { version = "3.6.2", features = ["windows-native"] }
+reqwest = { version = "0.12", features = ["json"] }
+axum = { version = "0.8", features = ["ws", "tokio"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+futures-util = "0.3"
+tokio-tungstenite = "0.23"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+bincode = "1.3"
+keyring = { version = "3.0.0", features = ["windows-native"] }
 
 # Kaspa crypto dependencies
-kaspa-consensus-core = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
-kaspa-hashes = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
-kaspa-addresses = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
-kaspa-wrpc-client = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
-kaspa-rpc-core = { git = "https://github.com/kaspanet/rusty-kaspa.git", tag = "v1.0.0" }
+kaspa-consensus-core = { workspace = true }
+kaspa-hashes = { workspace = true }
+kaspa-addresses = { workspace = true }
+kaspa-wrpc-client = { workspace = true }
+kaspa-rpc-core = { workspace = true }

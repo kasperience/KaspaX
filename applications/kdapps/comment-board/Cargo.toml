@@ -1,32 +1,38 @@
 [package]
 name = "comment-board"
 description = "Pure kdapp Comment Board - Based on TicTacToe Architecture"
-rust-version = "1.70"
-version = "0.1.0"
-edition = "2021"
-authors = ["kdapp developer"]
-license = "MIT"
+rust-version.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+include.workspace = true
+license.workspace = true
 
 [dependencies]
-kaspa-addresses = "*"
-kaspa-core = "*"
-kaspa-consensus-core = "*"
-kaspa-wrpc-client = "*"
-kaspa-rpc-core = "*"
-kaspa-txscript = "*"
+kaspa-addresses.workspace = true
+kaspa-core.workspace = true
+kaspa-consensus-core.workspace = true
+kaspa-wrpc-client.workspace = true
+kaspa-rpc-core.workspace = true
+kaspa-txscript.workspace = true
 
-kdapp = { path = "../kdapp" }
+kdapp.workspace = true
 
-borsh = "1.5.1"
-serde = { version = "1.0.217", features = ["derive"] }
-faster-hex = "0.8.1"
-itertools = "0.13.0"
-log = "0.4"
-env_logger = "0.11.3"
-thiserror = "1.0.61"
-rand = "0.8"
-secp256k1 = { version = "0.28.0", features = ["global-context", "rand-std"] }
-sha2 = "0.10.8"
-tokio = { version = "1.37.0", features = ["rt", "macros", "rt-multi-thread"] }
-clap = "4.5.4"
+borsh.workspace = true
+serde = { workspace = true, features = ["derive"] }
+faster-hex.workspace = true
+itertools.workspace = true
+log.workspace = true
+env_logger.workspace = true
+thiserror.workspace = true
+rand.workspace = true
+secp256k1 = { workspace = true, features = ["global-context", "rand-std"] }
+sha2.workspace = true
+tokio = { workspace = true, features = ["rt", "macros", "rt-multi-thread"] }
+clap.workspace = true
 smallvec = "1.11"
+
+[features]
+# Gate advanced command variants and moderation features to keep the
+# example entry point manageable by default.
+advanced = []

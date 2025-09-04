@@ -23,11 +23,21 @@ pub enum EpisodeError<E: Error + 'static> {
 }
 
 #[derive(Clone, PartialEq, Debug, BorshSerialize, BorshDeserialize)]
+pub struct TxOutputInfo {
+    pub value: u64,
+    pub script_version: u16,
+    // Optional script bytes for advanced policy verification (may be omitted by proxy)
+    pub script_bytes: Option<Vec<u8>>,
+}
+
+#[derive(Clone, PartialEq, Debug, BorshSerialize, BorshDeserialize)]
 pub struct PayloadMetadata {
     pub accepting_hash: Hash,
     pub accepting_daa: u64,
     pub accepting_time: u64,
     pub tx_id: Hash,
+    // Optional carrier transaction context (selected fields only)
+    pub tx_outputs: Option<Vec<TxOutputInfo>>,
 }
 
 pub type EpisodeId = u32;

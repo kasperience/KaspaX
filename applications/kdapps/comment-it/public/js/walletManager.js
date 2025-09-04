@@ -157,6 +157,9 @@ export async function proceedWithWallet() {
             currentWallet.kaspaAddress = data.kaspa_address;
             currentWallet.publicKey = data.public_key;
         }
+
+        // Persist pubkey for session restore flows that don't use session tokens (pure P2P)
+        try { localStorage.setItem('participant_pubkey', currentWallet.publicKey || ''); } catch {}
         
         // Show authentication panel
         showAuthPanel();
@@ -168,17 +171,64 @@ export async function proceedWithWallet() {
 }
 
 export function showAuthPanel() {
+    // Update status bar wallet addresses even if panel is deferred
+    try {
+        const truncatedAddress = truncateKaspaAddress(currentWallet.kaspaAddress);
+        document.getElementById('activeWalletAddress').textContent = truncatedAddress;
+        document.getElementById('walletAddress').textContent = truncatedAddress;
+    } catch {}
+
+    // If a restore attempt is in progress, avoid flashing the auth panel
+    if (window.deferAuthPanel) return;
     // Hide wallet panel
     document.getElementById('walletPanel').style.display = 'none';
-    
+
     // Show auth panel
     document.getElementById('authPanel').style.display = 'block';
-    document.getElementById('authButton').addEventListener('click', connectWallet);
+    const btn = document.getElementById('authButton');
+    if (window.indexerMember) {
+        btn.textContent = '[ START COMMENTING ]';
+        btn.onclick = () => {
+            document.getElementById('authPanel').style.display = 'none';
+            showCommentForm(true);
+        };
+        const hintId = 'authIndexerHint';
+        if (!document.getElementById(hintId)) {
+            const hint = document.createElement('div');
+            hint.id = hintId;
+            hint.style.cssText = 'margin-top:6px;font:12px monospace;color:#15e6d1;';
+            hint.textContent = '✓ Membership confirmed via kdapp-indexer — no authentication needed';
+            btn.parentElement?.appendChild(hint);
+        }
+    } else {
+        btn.textContent = '[ AUTHENTICATE FOR ROOM ]';
+        btn.onclick = connectWallet;
+        // Async membership re-check when wallet is known (fix ordering on load)
+        (async () => {
+            try {
+                const last = localStorage.getItem('last_episode_id');
+                if (!last) return;
+                const episodeId = parseInt(last, 10);
+                if (!Number.isFinite(episodeId)) return;
+                const pub = currentWallet && currentWallet.publicKey ? currentWallet.publicKey : (localStorage.getItem('participant_pubkey') || '');
+                if (!pub) return;
+                const base = (localStorage.getItem('indexerUrl') || 'http://127.0.0.1:8090');
+                const r = await fetch(`${base}/index/me/${episodeId}?pubkey=${pub}`);
+                if (r.ok) {
+                    const j = await r.json();
+                    if (j && j.member) {
+                        window.indexerMember = true;
+                        try { window.currentEpisodeId = episodeId; document.getElementById('episodeId').textContent = episodeId; } catch {}
+                        // Auto switch to comment form
+                        document.getElementById('authPanel').style.display = 'none';
+                        showCommentForm(true);
+                    }
+                }
+            } catch {}
+        })();
+    }
     
-    // Update active wallet display with truncated address
-    const truncatedAddress = truncateKaspaAddress(currentWallet.kaspaAddress);
-    document.getElementById('activeWalletAddress').textContent = truncatedAddress;
-    document.getElementById('walletAddress').textContent = truncatedAddress;
+    // (addresses already updated above)
     
     // Show funding info if wallet was just created
     if (currentWallet.wasCreated) {
@@ -197,6 +247,12 @@ export function changeWallet() {
     document.getElementById('walletPanel').style.display = 'block';
     document.getElementById('authPanel').style.display = 'none';
     document.getElementById('commentForm').style.display = 'none';
+
+    // Reset visible wallet addresses in the status bar and auth panel
+    const statusAddr = document.getElementById('walletAddress');
+    if (statusAddr) statusAddr.textContent = '--';
+    const activeAddr = document.getElementById('activeWalletAddress');
+    if (activeAddr) activeAddr.textContent = '--';
     
     // Reset wallet sections
     document.getElementById('createWalletSection').style.display = 'none';

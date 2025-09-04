@@ -62,26 +62,3 @@ pub struct RevokeSessionResponse {
     pub transaction_id: String,
     pub status: String,
 }
-
-// Comment-related API types (for comments handlers)
-#[derive(Deserialize)]
-pub struct SubmitCommentRequest {
-    pub episode_id: u64,
-    pub text: String,
-    pub session_token: String,
-}
-
-#[derive(Serialize)]
-pub struct SubmitCommentResponse {
-    pub episode_id: u64,
-    pub comment_id: u64,
-    pub transaction_id: String,
-    pub status: String,
-}
-
-#[derive(Serialize, Default)]
-pub struct CommentsResponse {
-    pub episode_id: u64,
-    pub comments: Vec<String>,
-    pub total_count: usize,
-}
