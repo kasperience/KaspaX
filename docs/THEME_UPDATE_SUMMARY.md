@@ -29,10 +29,21 @@ Derived tokens (for consistency and contrast):
 - Palette (`themes/kaspax/palette.css`)
   - Centralises official colours and derived tokens.
 - Hyprpaper
-  - New: ships a ready `wallpaper.png` aligned with the palette.
-  - Older example file `hyprpaper.conf.example` removed in new theme (our apply script generates config automatically).
+  - Ships a ready `wallpaper.png` aligned with the palette.
+  - `themes/kaspax/quotes.txt` included to enable optional quote overlay via the wallpaper generator.
+  - `hyprpaper.conf.example` from the old theme is not needed (the apply script generates config automatically).
 - Extras
   - New theme now includes: `kitty.conf`, `rofi.rasi`, `mako.conf`, and `sddm/` folder for login theming.
+
+### Profiles
+- Pretty (default): `themes/kaspax/hyprland.conf` with gentle blur/shadows.
+- Performance: `themes/kaspax/hyprland.performance.conf` with no blur/shadows and thinner borders.
+
+Switch profiles:
+```
+examples/kaspa-linux/kaspax/scripts/theme/switch-hyprland-profile.sh pretty
+examples/kaspa-linux/kaspax/scripts/theme/switch-hyprland-profile.sh performance
+```
 
 ## Adoption
 - Apply the theme and wallpaper:
