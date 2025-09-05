@@ -6,7 +6,7 @@ This guide covers installing and verifying the Kaspa Auth daemon as a user servi
 - `~/.cargo/bin/kaspa-auth` installed (built from this repo)
 - Desktop session with `xdg-open`
 - `gnome-keyring` + `libsecret` for keychain mode
-- Optional: `qrencode` for QR generation
+- Optional: `qrencode` for QR generation (used by the splash helper)
 
 ## Install Steps
 - Choose storage mode and install the user service:
@@ -16,8 +16,11 @@ This guide covers installing and verifying the Kaspa Auth daemon as a user servi
     - `bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh dev`
 - Verify and auto-repair if needed:
   - `bash applications/kdapps/kaspa-auth/scripts/verify-first-login-enhanced.sh --repair`
-- Run the first-login wizard (safe to re-run with `--force`):
+- Run the first-login wizard (safe to re-run with `--force`; opens a splash page with your address):
   - Keychain: `KASPAX_USE_KEYCHAIN=1 bash applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh --force`
+  - Preview splash directly:
+    - `ADDR=$(~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create | rg 'Kaspa Address:' | awk '{print $3}')`
+    - `KASPA_NETWORK=testnet applications/kdapps/kaspa-auth/scripts/show-wizard-splash.sh "$ADDR"`
 
 ## Quick Checks
 - Daemon status:
