@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Kaspa Auth – Wallet Ready</title>
+<style>
+body {
+  background: #1e1e1e;
+  color: #f3f3f3;
+  font-family: sans-serif;
+  text-align: center;
+  padding-top: 40px;
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.logo {
+  width: 120px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #000;
+}
+.address {
+  font-size: 1.2em;
+  margin-top: 20px;
+  word-break: break-all;
+}
+.qr img {
+  margin-top: 20px;
+  width: 200px;
+  height: 200px;
+}
+.faucet {
+  margin-top: 20px;
+}
+.faucet a {
+  color: #70c7ba;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <img class="logo" src="file://${LOGO_PATH}" alt="kdapp logo" />
+  <h1>Kaspa Auth Ready</h1>
+  <p>Your ${KASPA_NETWORK} wallet address:</p>
+  <p class="address">${KASPA_ADDRESS}</p>
+  <div class="qr">${QR_IMG_TAG}</div>
+  <p class="faucet">Fund it via <a href="https://faucet.kaspanet.io/" target="_blank">Kaspa Testnet Faucet</a></p>
+</div>
+</body>
+</html>

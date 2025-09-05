@@ -1,13 +1,13 @@
 # Kaspa Linux (kaspax) – First Login Setup
 
-A simple, reliable “login and wallet first” flow for a Hyprland + SDDM Arch desktop. One system password unlocks the OS keyring; kaspa-auth runs as a user daemon and the First Login Wizard shows your wallet address and faucet link.
+A simple, reliable “login and wallet first” flow for a Hyprland + SDDM Arch desktop. One system password unlocks the OS keyring; kaspa-auth runs as a user daemon and the First Login Wizard shows your wallet address in a splash page and provides a faucet link.
 
 Note (current default): for setup convenience, the daemon is started in dev mode (file-backed wallet under `~/.local/share/kaspa-auth`). The keyring flow remains documented and is recommended for production.
 
 ## What You Get
 - Kaspa-auth daemon autostarted as a user service (no root)
 - Key stored in the OS keyring (Secret Service)
-- First Login Wizard runs once, ensures identity, shows funding address
+- First Login Wizard runs once, ensures identity, shows funding address (terminal + splash)
 - Clean Hyprland session (no extra prompts)
 
 ## Prerequisites
@@ -63,7 +63,7 @@ bash applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh
 What the wizard does:
 - Ensures daemon is running (starts it if needed)
 - Ensures a `participant-peer` dev-mode wallet exists (file-backed)
-- Displays the Kaspa address and a faucet link
+- Displays the Kaspa address, opens a splash page, and shows a faucet link
 - Writes `~/.local/share/kaspa-auth/.first_login_done` to avoid reruns
 
 Disable/Reset:
@@ -126,12 +126,11 @@ Then switch the service to keychain mode and restart.
 
 ## Next Steps
 - Add a minimal organizer peer desktop entry or script for a full local demo
-- Optionally add a small GUI splash (QR code for the address) to the wizard
 
 ---
 This guide tracks the kaspa-auth integration steps to avoid missing pieces during install.
 ### Styling / Splash refresh
-- The wizard splash page is generated on demand. To see style/template changes, re-run:
+- The wizard splash page is generated from `applications/kdapps/kaspa-auth/public/wizard_splash.template.html` on demand. To see style/template changes, re-run:
 ```
 applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh --force
 ```

@@ -150,6 +150,9 @@ main() {
   local addr
   addr=$(extract_address || true)
   show_summary "$addr"
+  if [ -n "$addr" ]; then
+    bash "$(cd "$(dirname "$0")" && pwd)/show-wizard-splash.sh" "$addr" || true
+  fi
 
   # Mark as done to avoid rerun
   touch "$WIZARD_MARKER"
