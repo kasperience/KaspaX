@@ -9,6 +9,9 @@ WIZARD_MARKER="$HOME/.local/share/kaspa-auth/.first_login_done"
 SOCKET_PATH="${XDG_RUNTIME_DIR:-/tmp}/kaspa-auth.sock"
 CLI_BIN="${CLI_BIN:-$HOME/.cargo/bin/kaspa-auth}"
 
+# Storage mode: default to dev mode (file-backed). Set KASPAX_USE_KEYCHAIN=1 to use keychain.
+USE_KEYCHAIN="${KASPAX_USE_KEYCHAIN:-0}"
+
 log() { echo -e "[kaspa-first-login] $*"; }
 
 ensure_dirs() {
@@ -24,14 +27,22 @@ start_daemon() {
   fi
 
   # Fallback: try foreground daemon if service isn't running and binary is present
-  if ! ss -lpn | grep -q "$(printf %q "$SOCKET_PATH")" 2>/dev/null; then
+  # Use a direct Unix socket check to avoid RTNETLINK noise from ss
+  if [ ! -S "$SOCKET_PATH" ]; then
     if ! systemctl --user is-active --quiet kaspa-auth; then
       if [ -x "$CLI_BIN" ]; then
         log "Launching kaspa-auth daemon in background (fallback)..."
-        ("$CLI_BIN" --keychain daemon start --foreground \
+        if [ "$USE_KEYCHAIN" = "1" ]; then
+          ("$CLI_BIN" --keychain daemon start --foreground \
+            --socket-path "$SOCKET_PATH" \
+            --data-dir "$HOME/.local/share/kaspa-auth" \
+            >/dev/null 2>&1 & disown) || true
+        else
+          ("$CLI_BIN" --dev-mode daemon start --foreground \
           --socket-path "$SOCKET_PATH" \
           --data-dir "$HOME/.local/share/kaspa-auth" \
           >/dev/null 2>&1 & disown) || true
+        fi
       fi
     fi
   fi
@@ -49,15 +60,24 @@ wait_for_socket() {
 }
 
 ensure_wallet() {
-  # Use keychain-backed wallet; create if missing, print info.
-  log "Ensuring keychain wallet exists (participant-peer)..."
-  "$CLI_BIN" --keychain wallet-status --username participant-peer --create || true
+  # Ensure wallet exists; default dev mode unless keychain explicitly requested
+  if [ "$USE_KEYCHAIN" = "1" ]; then
+    log "Ensuring keychain wallet exists (participant-peer)..."
+    "$CLI_BIN" --keychain wallet-status --username participant-peer --create || true
+  else
+    log "Ensuring dev-mode wallet exists (participant-peer)..."
+    "$CLI_BIN" --dev-mode wallet-status --username participant-peer --create || true
+  fi
 }
 
 extract_address() {
   # Parse address from wallet-status output
   local out
-  out=$("$CLI_BIN" --keychain wallet-status --username participant-peer 2>/dev/null || true)
+  if [ "$USE_KEYCHAIN" = "1" ]; then
+    out=$("$CLI_BIN" --keychain wallet-status --username participant-peer 2>/dev/null || true)
+  else
+    out=$("$CLI_BIN" --dev-mode wallet-status --username participant-peer 2>/dev/null || true)
+  fi
   echo "$out" | awk -F": " '/Kaspa Address:/ {print $2; exit}'
 }
 
@@ -67,7 +87,11 @@ show_summary() {
   echo "========================================"
   echo " Kaspa Auth – First Login Setup"
   echo "========================================"
-  echo "🔑 Identity: participant-peer (OS keychain)"
+  if [ "$USE_KEYCHAIN" = "1" ]; then
+    echo "🔑 Identity: participant-peer (OS keychain)"
+  else
+    echo "🔑 Identity: participant-peer (dev mode)"
+  fi
   if [ -n "$addr" ]; then
     echo "💰 Address: $addr"
     echo "💡 Fund (testnet): https://faucet.kaspanet.io/"
@@ -78,8 +102,8 @@ show_summary() {
   echo
   echo "Next: Start an organizer peer and authenticate via daemon when needed."
   echo "CLI tips:"
-  echo "  $CLI_BIN -- daemon status --socket-path \"$SOCKET_PATH\""
-  echo "  $CLI_BIN -- daemon send ping --socket-path \"$SOCKET_PATH\""
+  echo "  $CLI_BIN daemon status --socket-path \"$SOCKET_PATH\""
+  echo "  $CLI_BIN daemon send --socket-path \"$SOCKET_PATH\" ping"
   echo
 }
 
@@ -93,7 +117,7 @@ main() {
 
   if ! command -v "$CLI_BIN" >/dev/null 2>&1; then
     echo "kaspa-auth binary not found at $CLI_BIN"
-    echo "Install with: cargo install --path examples/kaspa-auth --bin kaspa-auth"
+    echo "Install with: cargo install --path applications/kdapps/kaspa-auth --bin kaspa-auth"
     exit 0
   fi
 
@@ -109,4 +133,3 @@ main() {
 }
 
 main "$@"
-

@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-# Override this path if you install the binary elsewhere
-ExecStart=%h/.cargo/bin/kaspa-auth --keychain daemon start --foreground \
+## Override this path if you install the binary elsewhere
+## Default: run in dev mode (file-backed wallet under ~/.local/share/kaspa-auth)
+ExecStart=%h/.cargo/bin/kaspa-auth --dev-mode daemon start --foreground \
   --socket-path %t/kaspa-auth.sock \
   --data-dir %h/.local/share/kaspa-auth \
   --session-timeout 3600
@@ -13,9 +14,10 @@ Restart=on-failure
 RestartSec=2s
 NoNewPrivileges=yes
 ProtectSystem=full
-ProtectHome=yes
+## Allow read-only $HOME but permit writes to data dir and runtime dir
+ProtectHome=read-only
+ReadWritePaths=%h/.local/share %t
 PrivateTmp=yes
 
 [Install]
 WantedBy=default.target
-
