@@ -4,4 +4,3 @@ pub mod challenge;
 pub mod revoke;
 pub mod status;
 pub mod verify;
-pub mod wallet;

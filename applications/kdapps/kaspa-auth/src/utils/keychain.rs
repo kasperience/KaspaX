@@ -166,7 +166,9 @@ impl KeychainManager {
             Ok(h) => h,
             Err(e) => return Err(e),
         };
-        let parsed = PasswordHash::new(&stored)?;
+        // Map argon2 password-hash parsing error into a StdError type
+        let parsed = PasswordHash::new(&stored)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, format!("invalid password hash: {e}")))?;
         Ok(Argon2::default().verify_password(password.as_bytes(), &parsed).is_ok())
     }
 
