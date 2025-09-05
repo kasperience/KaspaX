@@ -19,6 +19,8 @@ if [ "${1:-}" = "--repair" ]; then
   REPAIR=1
 fi
 
+FAILED=0
+
 log() { echo -e "[verify-first-login] $*"; }
 
 repair() {
@@ -39,6 +41,11 @@ check_binary() {
 check_unit() {
   if [ -f "$UNIT_PATH" ]; then
     log "✅ User unit installed: $UNIT_PATH"
+    keychain_count=$(grep -c -- '--keychain' "$UNIT_PATH")
+    dev_count=$(grep -c -- '--dev-mode' "$UNIT_PATH")
+    if [ $((keychain_count + dev_count)) -gt 1 ]; then
+      log "⚠️ Multiple mode flags in unit (keychain=$keychain_count dev-mode=$dev_count)"
+    fi
   else
     log "❌ User unit not found at $UNIT_PATH"
     [ "$REPAIR" -eq 1 ] && repair || return 1
@@ -102,14 +109,15 @@ check_wallet() {
 
 main() {
   log "Mode detected from unit: $MODE"
-  check_binary || true
-  check_unit || true
-  check_service_active || true
-  check_socket || true
-  check_cli_status || true
-  check_wallet || true
+  check_binary || FAILED=1
+  check_unit || FAILED=1
+  check_service_active || FAILED=1
+  check_socket || FAILED=1
+  check_cli_status || FAILED=1
+  check_wallet || FAILED=1
 
   log "Done. Use --repair to attempt automated fixes."
 }
 
 main "$@"
+exit $FAILED
