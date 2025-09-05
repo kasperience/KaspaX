@@ -2,6 +2,14 @@
 
 If the user unit crash-loops or `verify-first-login.sh` reports a socket present but the CLI cannot reach the daemon, you may have a stale socket or duplicated storage-mode flags in the unit.
 
+Before restarting the unit, remove any leftover runtime socket:
+
+```
+if [[ -n "${XDG_RUNTIME_DIR:-}" ]]; then
+  rm -f "${XDG_RUNTIME_DIR}/kaspa-auth.sock" || true
+fi
+```
+
 Quick fix:
 
 ```
