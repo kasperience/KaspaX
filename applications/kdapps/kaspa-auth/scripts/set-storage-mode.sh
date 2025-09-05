@@ -63,18 +63,24 @@ WantedBy=default.target
 UNIT
 
 # Normalize any accidental duplicates and mixed modes (belt-and-suspenders)
-sed -i 's/--keychain\s\+--keychain/--keychain/g' "$UNIT_PATH" || true
-sed -i 's/--dev-mode\s\+--dev-mode/--dev-mode/g' "$UNIT_PATH" || true
+sed -E -i 's/--keychain[[:space:]]+--keychain/--keychain/g' "$UNIT_PATH" || true
+sed -E -i 's/--dev-mode[[:space:]]+--dev-mode/--dev-mode/g' "$UNIT_PATH" || true
 if grep -qE 'ExecStart=.*--dev-mode.*--keychain|ExecStart=.*--keychain.*--dev-mode' "$UNIT_PATH"; then
   # Prefer the explicitly selected MODE_FLAG
   case "$mode" in
     dev)
-      sed -i 's/--keychain\s\+//g' "$UNIT_PATH"
+      sed -E -i 's/--keychain[[:space:]]+//g' "$UNIT_PATH"
       ;;
     keychain)
-      sed -i 's/--dev-mode\s\+//g' "$UNIT_PATH"
+      sed -E -i 's/--dev-mode[[:space:]]+//g' "$UNIT_PATH"
       ;;
   esac
+fi
+
+count=$(grep -c -- "$MODE_FLAG" "$UNIT_PATH")
+if [[ "$count" -ne 1 ]]; then
+  echo "[set-storage-mode] Expected exactly one $MODE_FLAG flag in $UNIT_PATH, found $count" >&2
+  exit 1
 fi
 
 echo "[set-storage-mode] Wrote ${UNIT_PATH} (mode=${mode})"
