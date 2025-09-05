@@ -67,3 +67,13 @@ Upon logging in, the `hyprland.conf` script is executed. It performs the followi
 *   Launches essential desktop components like Waybar, Mako, and the Polkit agent.
 
 This setup ensures that the `kaspa-auth` daemon is running and ready to be used by your other `kdapps` in a clean, standard Arch Linux environment.
+
+## Hyprland v0.50 Gestures Change
+
+Hyprland v0.50 removed the legacy `gestures { … }` configuration group. Older examples like
+`gestures { workspace_swipe = on|off }` now produce a config error and should be disabled or
+removed. Our sample `hyprland.conf` comments out this section to avoid errors on v0.50+.
+
+If you want swipe gestures on v0.50+, refer to the Hyprland documentation for plugin-based or
+external gesture solutions compatible with your setup. The exact approach can vary by distro and
+input stack, so consult the current Hyprland wiki for recommendations.
