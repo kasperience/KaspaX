@@ -37,7 +37,7 @@ cat >"$UNIT_PATH" <<UNIT
 [Unit]
 Description=Kaspa Auth Daemon (user)
 After=default.target graphical-session.target
-Wants=default.target
+Wants=graphical-session.target
 
 [Service]
 Type=simple
