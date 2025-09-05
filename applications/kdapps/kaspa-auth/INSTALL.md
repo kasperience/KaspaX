@@ -15,7 +15,7 @@ This guide covers installing and verifying the Kaspa Auth daemon as a user servi
   - Dev (file-backed, for testing):
     - `bash applications/kdapps/kaspa-auth/scripts/set-storage-mode.sh dev`
 - Verify and auto-repair if needed:
-  - `bash applications/kdapps/kaspa-auth/scripts/verify-first-login.sh --repair`
+  - `bash applications/kdapps/kaspa-auth/scripts/verify-first-login-enhanced.sh --repair`
 - Run the first-login wizard (safe to re-run with `--force`):
   - Keychain: `KASPAX_USE_KEYCHAIN=1 bash applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh --force`
 
@@ -43,4 +43,3 @@ If the service crash-loops or the socket exists but the CLI cannot connect:
 ## Notes
 - Systemd hardening: `ProtectHome=read-only` with `ReadWritePaths=%h/.local/share %t` allows CLI in `~/.cargo/bin`, data in `~/.local/share`, and the runtime socket under `$XDG_RUNTIME_DIR`.
 - The unit currently runs the daemon in dev or keychain mode depending on the script you use; production should prefer keychain.
-
