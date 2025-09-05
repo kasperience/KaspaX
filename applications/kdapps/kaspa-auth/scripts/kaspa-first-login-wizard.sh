@@ -10,7 +10,22 @@ SOCKET_PATH="${XDG_RUNTIME_DIR:-/tmp}/kaspa-auth.sock"
 CLI_BIN="${CLI_BIN:-$HOME/.cargo/bin/kaspa-auth}"
 
 # Storage mode: default to dev mode (file-backed). Set KASPAX_USE_KEYCHAIN=1 to use keychain.
-USE_KEYCHAIN="${KASPAX_USE_KEYCHAIN:-0}"
+# If unset, auto-detect from installed systemd unit ExecStart.
+USE_KEYCHAIN="${KASPAX_USE_KEYCHAIN:-}"
+
+UNIT_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/kaspa-auth.service"
+
+detect_mode_from_unit() {
+  if [ -z "${USE_KEYCHAIN}" ] && [ -f "$UNIT_PATH" ]; then
+    if grep -q -- "--keychain" "$UNIT_PATH"; then
+      USE_KEYCHAIN=1
+    else
+      USE_KEYCHAIN=0
+    fi
+  fi
+  # default if still empty
+  USE_KEYCHAIN="${USE_KEYCHAIN:-0}"
+}
 
 log() { echo -e "[kaspa-first-login] $*"; }
 
@@ -108,12 +123,20 @@ show_summary() {
 }
 
 main() {
+  # Parse args
+  FORCE=0
+  if [ "${1:-}" = "--force" ]; then
+    FORCE=1
+  fi
+
   ensure_dirs
 
-  if [ -f "$WIZARD_MARKER" ]; then
+  if [ -f "$WIZARD_MARKER" ] && [ "$FORCE" -ne 1 ]; then
     log "First login already completed. Exiting."
     exit 0
   fi
+
+  detect_mode_from_unit
 
   if ! command -v "$CLI_BIN" >/dev/null 2>&1; then
     echo "kaspa-auth binary not found at $CLI_BIN"

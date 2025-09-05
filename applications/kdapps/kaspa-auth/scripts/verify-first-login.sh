@@ -8,6 +8,12 @@ SOCKET_PATH="${XDG_RUNTIME_DIR:-/tmp}/kaspa-auth.sock"
 DATA_DIR="$HOME/.local/share/kaspa-auth"
 UNIT_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/kaspa-auth.service"
 
+# Detect storage mode from installed unit
+MODE="dev"
+if [ -f "$UNIT_PATH" ] && grep -q -- "--keychain" "$UNIT_PATH"; then
+  MODE="keychain"
+fi
+
 REPAIR=0
 if [ "${1:-}" = "--repair" ]; then
   REPAIR=1
@@ -72,16 +78,30 @@ check_cli_status() {
 }
 
 check_wallet() {
-  if "$CLI_BIN" --dev-mode wallet-status --username participant-peer --create >/dev/null 2>&1; then
-    ADDR=$("$CLI_BIN" --dev-mode wallet-status --username participant-peer | awk -F": " '/Kaspa Address:/ {print $2; exit}')
-    log "✅ Wallet OK (participant-peer). Address: ${ADDR:-unknown}"
-  else
-    log "❌ Wallet status failed"
-    return 1
-  fi
+  case "$MODE" in
+    keychain)
+      if "$CLI_BIN" --keychain wallet-status --username participant-peer --create >/dev/null 2>&1; then
+        ADDR=$("$CLI_BIN" --keychain wallet-status --username participant-peer | awk -F": " '/Kaspa Address:/ {print $2; exit}')
+        log "✅ Wallet OK (keychain, participant-peer). Address: ${ADDR:-unknown}"
+      else
+        log "❌ Wallet status failed (keychain)"
+        return 1
+      fi
+      ;;
+    *)
+      if "$CLI_BIN" --dev-mode wallet-status --username participant-peer --create >/dev/null 2>&1; then
+        ADDR=$("$CLI_BIN" --dev-mode wallet-status --username participant-peer | awk -F": " '/Kaspa Address:/ {print $2; exit}')
+        log "✅ Wallet OK (dev, participant-peer). Address: ${ADDR:-unknown}"
+      else
+        log "❌ Wallet status failed (dev)"
+        return 1
+      fi
+      ;;
+  esac
 }
 
 main() {
+  log "Mode detected from unit: $MODE"
   check_binary || true
   check_unit || true
   check_service_active || true
@@ -93,4 +113,3 @@ main() {
 }
 
 main "$@"
-

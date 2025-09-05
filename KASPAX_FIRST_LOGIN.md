@@ -140,3 +140,14 @@ or open directly with your address:
 ADDR=$(~/.cargo/bin/kaspa-auth --dev-mode wallet-status --username participant-peer --create | rg 'Kaspa Address:' | awk '{print $3}')
 KASPA_NETWORK=testnet applications/kdapps/kaspa-auth/scripts/show-wizard-splash.sh "$ADDR"
 ```
+## Troubleshooting
+
+- No splash or wallet prompt after login:
+  - The wizard runs once and then no-ops after writing `~/.local/share/kaspa-auth/.first_login_done`. Re-run explicitly:
+    - `KASPAX_USE_KEYCHAIN=1 bash applications/kdapps/kaspa-auth/scripts/kaspa-first-login-wizard.sh --force`
+- Daemon inactive or socket unreachable:
+  - `bash applications/kdapps/kaspa-auth/scripts/verify-first-login.sh --repair`
+  - If logs mention `--keychain` duplicated, normalize the unit and restart:
+    - `bash applications/kdapps/kaspa-auth/scripts/repair-user-unit.sh`
+    - `systemctl --user reset-failed kaspa-auth.service && systemctl --user restart kaspa-auth.service`
+- Full reference: `applications/kdapps/kaspa-auth/UNIT_TROUBLESHOOTING.md`.
