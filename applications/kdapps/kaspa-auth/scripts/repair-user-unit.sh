@@ -39,6 +39,9 @@ if grep -q -- '--dev-mode' "$UNIT_PATH"; then
 fi
 
 echo "[repair-user-unit] Repaired unit flags in $UNIT_PATH"
+if [[ -n "${XDG_RUNTIME_DIR:-}" ]]; then
+  rm -f "${XDG_RUNTIME_DIR}/kaspa-auth.sock" || true
+fi
 systemctl --user daemon-reload
 systemctl --user restart kaspa-auth.service || true
 systemctl --user status kaspa-auth.service --no-pager || true
