@@ -1,6 +1,7 @@
 [Unit]
 Description=Kaspa Auth Daemon (user)
-After=network.target
+After=default.target graphical-session.target
+Wants=graphical-session.target
 
 [Service]
 Type=simple
@@ -10,14 +11,21 @@ ExecStart=%h/.cargo/bin/kaspa-auth --dev-mode daemon start --foreground \
   --socket-path %t/kaspa-auth.sock \
   --data-dir %h/.local/share/kaspa-auth \
   --session-timeout 3600
-Restart=on-failure
+Environment=KASPA_AUTH_DATA_DIR=%h/.local/share/kaspa-auth
+Restart=always
 RestartSec=2s
-NoNewPrivileges=yes
+
+# Hardening
 ProtectSystem=full
-## Allow read-only $HOME but permit writes to data dir and runtime dir
 ProtectHome=read-only
 ReadWritePaths=%h/.local/share %t
+NoNewPrivileges=yes
 PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
 
 [Install]
 WantedBy=default.target

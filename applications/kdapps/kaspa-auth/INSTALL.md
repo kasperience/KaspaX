@@ -43,3 +43,4 @@ If the service crash-loops or the socket exists but the CLI cannot connect:
 ## Notes
 - Systemd hardening: `ProtectHome=read-only` with `ReadWritePaths=%h/.local/share %t` allows CLI in `~/.cargo/bin`, data in `~/.local/share`, and the runtime socket under `$XDG_RUNTIME_DIR`.
 - The unit currently runs the daemon in dev or keychain mode depending on the script you use; production should prefer keychain.
+- The service starts after `default.target` and `graphical-session.target` and declares `Wants=graphical-session.target` to align with graphical session startup.
