@@ -81,6 +81,17 @@ pkill waybar
 pkill -USR2 waybar
 ```
 
+## KaspaX Helpers
+- Switch launch method safely and reload Hyprland:
+```
+bash scripts/theme/switch-waybar-management.sh systemd   # or: hyprland
+```
+- Included user unit (if you prefer systemd):
+  - `hyprland-sddm-config/config/systemd/user/waybar.service`
+  - Install/enable:
+    - `install -m 0644 hyprland-sddm-config/config/systemd/user/waybar.service ~/.config/systemd/user/`
+    - `systemctl --user daemon-reload && systemctl --user enable --now waybar.service`
+
 ## Notes
 - Prefer one launch path to avoid race conditions and duplicates.
 - If you choose Hyprland, consider masking the unit (`systemctl --user mask waybar.service`).
