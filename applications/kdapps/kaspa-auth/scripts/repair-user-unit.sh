@@ -14,13 +14,28 @@ if [[ ! -f "$UNIT_PATH" ]]; then
 fi
 
 # Collapse accidental duplicate mode flags if present
-sed -i 's/--keychain\s\+--keychain/--keychain/g' "$UNIT_PATH" || true
-sed -i 's/--dev-mode\s\+--dev-mode/--dev-mode/g' "$UNIT_PATH" || true
+sed -E -i 's/--keychain[[:space:]]+--keychain/--keychain/g' "$UNIT_PATH" || true
+sed -E -i 's/--dev-mode[[:space:]]+--dev-mode/--dev-mode/g' "$UNIT_PATH" || true
 
 # Extra guard: ensure that we do not have both --dev-mode and --keychain simultaneously
 if grep -qE 'ExecStart=.*--dev-mode.*--keychain|ExecStart=.*--keychain.*--dev-mode' "$UNIT_PATH"; then
   echo "[repair-user-unit] Found both --dev-mode and --keychain. Keeping --keychain for keychain mode." >&2
-  sed -i 's/--dev-mode\s\+//g' "$UNIT_PATH"
+  sed -E -i 's/--dev-mode[[:space:]]+//g' "$UNIT_PATH"
+fi
+
+if grep -q -- '--keychain' "$UNIT_PATH"; then
+  count=$(grep -c -- '--keychain' "$UNIT_PATH")
+  if [[ "$count" -ne 1 ]]; then
+    echo "[repair-user-unit] Expected exactly one --keychain flag in $UNIT_PATH, found $count" >&2
+    exit 1
+  fi
+fi
+if grep -q -- '--dev-mode' "$UNIT_PATH"; then
+  count=$(grep -c -- '--dev-mode' "$UNIT_PATH")
+  if [[ "$count" -ne 1 ]]; then
+    echo "[repair-user-unit] Expected exactly one --dev-mode flag in $UNIT_PATH, found $count" >&2
+    exit 1
+  fi
 fi
 
 echo "[repair-user-unit] Repaired unit flags in $UNIT_PATH"
